@@ -38,10 +38,19 @@ if __name__ == "__main__":
     args = _initialize_arguments(p)
     print(args)
 
-    # load data
-    test = load_asap_data(args.test_file)
+    # load train data
+    train = load_asap_data('/home/daegon/Multi-Scale-BERT-AES/datatouch/prompt8_train.txt')
 
-    test_documents, test_labels = [], []
+    train_documents, train_labels = [], []        # 에세이별, 점수별
+    for _, text, label in train:
+        train_documents.append(text)
+        train_labels.append(label)
+    
+    # load test data
+    # test = load_asap_data(args.test_file)
+    test = load_asap_data('/home/daegon/Multi-Scale-BERT-AES/datatouch/prompt8_test.txt')
+
+    test_documents, test_labels = [], []        # 에세이별, 점수별
     for _, text, label in test:
         test_documents.append(text)
         test_labels.append(label)
@@ -50,4 +59,5 @@ if __name__ == "__main__":
     print("label number:", len(test_labels))
 
     model = DocumentBertScoringModel(args=args)
+    model.fit((train_documents, train_labels))
     model.predict_for_regress((test_documents, test_labels))

@@ -7,19 +7,20 @@ import torch.nn.functional as F
 
 def init_weights(m):
     if isinstance(m, nn.Linear):
-        torch.nn.init.xavier_uniform(m.weight)
+        torch.nn.init.xavier_uniform_(m.weight)     # torch.nn.init.xavier_uniform 대신 torch.nn.init.xavier_uniform_ : 언더바 붙인걸 사용한다고 한다.
         m.bias.data.fill_(7)
 
 
-class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):
+class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  # 원본    # 이거 초기화할때는 nn.Module 써야하나?? 그래야하나.........그럼 pretrained()만 바꿔주면 된다.
+# class DocumentBertSentenceChunkAttentionLSTM(nn.Module): 
     def __init__(self, bert_model_config: BertConfig):
         super(DocumentBertSentenceChunkAttentionLSTM, self).__init__(bert_model_config)
-        self.bert = BertModel(bert_model_config)
+        self.bert = BertModel(bert_model_config)  
         self.dropout = nn.Dropout(p=bert_model_config.hidden_dropout_prob)
         self.lstm = LSTM(bert_model_config.hidden_size,bert_model_config.hidden_size)
         self.mlp = nn.Sequential(
             nn.Dropout(p=bert_model_config.hidden_dropout_prob),
-            nn.Linear(bert_model_config.hidden_size, 1)
+            nn.Linear(bert_model_config.hidden_size, 1)      # 회귀이기때문에 마지막은 1로 한다.
         )
         self.w_omega = nn.Parameter(torch.Tensor(bert_model_config.hidden_size, bert_model_config.hidden_size))
         self.b_omega = nn.Parameter(torch.Tensor(1, bert_model_config.hidden_size))
@@ -40,19 +41,20 @@ class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):
                                                                            token_type_ids=document_batch[doc_id][:bert_batch_size, 1],
                                                                            attention_mask=document_batch[doc_id][:bert_batch_size, 2])[1])
         output, (_, _) = self.lstm(bert_output.permute(1, 0, 2))
-        output = output.permute(1, 0, 2)
+        output = output.permute(1, 0, 2)    # 차원변경
         # (batch_size, seq_len, num_hiddens)
         attention_w = torch.tanh(torch.matmul(output, self.w_omega) + self.b_omega)
         attention_u = torch.matmul(attention_w, self.u_omega)  # (batch_size, seq_len, 1)
         attention_score = F.softmax(attention_u, dim=1)  # (batch_size, seq_len, 1)
         attention_hidden = output * attention_score  # (batch_size, seq_len, num_hiddens)
-        attention_hidden = torch.sum(attention_hidden, dim=1)  # 加权求和 (batch_size, num_hiddens)
+        attention_hidden = torch.sum(attention_hidden, dim=1)  # (batch_size, num_hiddens)
         prediction = self.mlp(attention_hidden)
         assert prediction.shape[0] == document_batch.shape[0]
         return prediction
 
 
-class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel):
+class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel): # 원본
+# class DocumentBertCombineWordDocumentLinear(nn.Module):
     def __init__(self, bert_model_config: BertConfig):
         super(DocumentBertCombineWordDocumentLinear, self).__init__(bert_model_config)
         self.bert = BertModel(bert_model_config)
@@ -61,7 +63,7 @@ class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel):
 
         self.mlp = nn.Sequential(
             nn.Dropout(p=bert_model_config.hidden_dropout_prob),
-            nn.Linear(bert_model_config.hidden_size * 2, 1)
+            nn.Linear(bert_model_config.hidden_size * 2, 1)     # 회귀이기때문에 마지막은 1로 한다.
         )
         self.mlp.apply(init_weights)
 
