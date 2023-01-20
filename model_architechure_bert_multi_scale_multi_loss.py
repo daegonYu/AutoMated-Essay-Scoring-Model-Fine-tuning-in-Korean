@@ -154,6 +154,12 @@ class DocumentBertScoringModel():
         test_eva_res = evaluation(label_scores, prediction_scores)
         print("pearson:", float(test_eva_res[7]))
         print("qwk:", float(test_eva_res[8]))
+        
+        # txt 파일에 이어쓰기
+        f = open('/home/daegon/Multi-Scale-BERT-AES/loss_eval/eval.txt','a')
+        f.write("pearson:",float(test_eva_res[7]), "qwk:", float(test_eva_res[8]))
+        f.close()
+        
         return float(test_eva_res[7]), float(test_eva_res[8])
 
     def fit(self, data):    # 학습하는 부분 (학습데이터)
@@ -183,8 +189,8 @@ class DocumentBertScoringModel():
         self.bert_regression_by_word_document.train()
         self.bert_regression_by_chunk.train()
         loss_list = []
-        for epoch in tqdm(range(epochs), mininterval=0.01):
-            for i in range(0, document_representations_word_document.shape[0], self.args['batch_size']):    # iteration
+        for epoch in tqdm(range(epochs)):
+            for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
                 batch_document_tensors_word_document = document_representations_word_document[i:i + self.args['batch_size']].to(device=self.args['device'])
                 batch_predictions_word_document = self.bert_regression_by_word_document(batch_document_tensors_word_document, device=self.args['device'])
                 batch_predictions_word_document = torch.squeeze(batch_predictions_word_document)
@@ -207,6 +213,7 @@ class DocumentBertScoringModel():
                 mr_loss = F.margin_ranking_loss(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']], batch_predictions_word_chunk_sentence_doc.sign()) # 평균되어서 나온다.
                 a=1;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
+                print('Epoch : {}, iter: {}, Loss : {}',epoch, i, total_loss.item())
                 loss_list.append(total_loss.item())
                 
                 total_loss.backward()
@@ -217,11 +224,11 @@ class DocumentBertScoringModel():
                 
         
         # 모델 저장 nn.Module 사용시로 알고 있다.
-        model_save = True
-        PATH = '/home/daegon/Multi-Scale-BERT-AES/models'
+        model_save = False
+        _PATH = '/home/daegon/Multi-Scale-BERT-AES/models'
         if model_save:
-            torch.save(self.bert_regression_by_word_document.state_dict(), PATH+'/word_doc.pt')
-            torch.save(self.bert_regression_by_chunk.state_dict(), PATH+'/chunk.pt')
+            torch.save(self.bert_regression_by_word_document.state_dict(), _PATH+'/word_doc.pt')
+            torch.save(self.bert_regression_by_chunk.state_dict(), _PATH+'/chunk.pt')
             print('success the model save')
         
         # 손실그래프 확인하기
@@ -230,7 +237,7 @@ class DocumentBertScoringModel():
             plt.plot(range(len(loss_list)),loss_list)
             plt.show()
             loss_list = np.array(loss_list)
-            np.save('/home/daegon/Multi-Scale-BERT-AES/loss/loss_1.npy',loss_list)
+            np.save('/home/daegon/Multi-Scale-BERT-AES/loss_eval/loss_1.npy',loss_list)
             
         # pretrained 모델 저장하기
         _save = True
