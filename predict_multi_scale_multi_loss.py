@@ -39,8 +39,13 @@ if __name__ == "__main__":
     print(args)
 
     # load train data
-    train = load_asap_data('/home/daegon/Multi-Scale-BERT-AES/datatouch/prompt8_train.txt')
-
+    
+    if_sample=True
+    if if_sample:   # test data
+        train = load_asap_data('/home/daegon/Multi-Scale-BERT-AES/datatouch/prompt8_test.txt')
+    else:   # train data
+        train = load_asap_data('/home/daegon/Multi-Scale-BERT-AES/datatouch/prompt8_train.txt')
+    
     train_documents, train_labels = [], []        # 에세이별, 점수별
     for _, text, label in train:
         train_documents.append(text)

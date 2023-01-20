@@ -27,10 +27,19 @@ def sim(y,yhat):
     e = torch.tensor(1e-8)
     m = torch.pow(torch.pow(y,2).sum(),0.5) * torch.pow(torch.pow(yhat,2).sum(),0.5)
     similarity = torch.sum(y*yhat) / torch.max(m,e)
-    return 1- similarity
+    return (1- similarity)/yhat.size(0)
 
-def mr_loss(y,yhat):
-    pass
+def mr_loss_func(pred,label):
+    mr_loss = 0
+    for i in range(pred.size(0)):
+        y = pred - pred[i]
+        yhat = label - label[i]
+        yhat = yhat.sign()
+        mask = y.sign() != yhat.sign()
+        mr_loss += y[yhat==0].sign().sum()
+        mr_loss += y[mask].abs().sum()
+        
+    return mr_loss/label.size(0)
 
 class DocumentBertScoringModel():
     def __init__(self, args=None):
@@ -209,8 +218,8 @@ class DocumentBertScoringModel():
                 
                 # F를 사용한 loss function은 평균 내서 나온다.
                 mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']])  # 평균되어서 나온다.
-                sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']]) / correct_output[i:i + self.args['batch_size']].size(0)
-                mr_loss = F.margin_ranking_loss(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']], batch_predictions_word_chunk_sentence_doc.sign()) # 평균되어서 나온다.
+                sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']]) 
+                mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']]) # 평균되어서 나온다.
                 a=1;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
                 print('Epoch : {}, iter: {}, Loss : {}',epoch, i, total_loss.item())
