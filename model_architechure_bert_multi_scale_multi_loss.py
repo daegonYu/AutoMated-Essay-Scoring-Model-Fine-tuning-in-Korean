@@ -36,7 +36,7 @@ def mr_loss_func(pred,label):
         yhat = label - label[i]
         yhat = yhat.sign()
         mask = y.sign() != yhat.sign()
-        mr_loss += y[yhat==0].sign().sum()
+
         mr_loss += y[mask].abs().sum()
         
     return mr_loss/label.size(0)
@@ -173,7 +173,7 @@ class DocumentBertScoringModel():
 
     def fit(self, data):    # 학습하는 부분 (학습데이터)
         lr = 6e-5
-        epochs = 2     # 80
+        epochs = 80     # 80
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=0.005)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=0.005)
         
