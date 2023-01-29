@@ -166,7 +166,7 @@ class DocumentBertScoringModel():
         
         # txt 파일에 이어쓰기
         f = open('/home/daegon/Multi-Scale-BERT-AES/loss_eval/eval.txt','a')
-        f.write("pearson:",float(test_eva_res[7]), "qwk:", float(test_eva_res[8]))
+        f.write("pearson: {} \t qwk: {}".format(float(test_eva_res[7]),float(test_eva_res[8])))
         f.close()
         
         return float(test_eva_res[7]), float(test_eva_res[8])
