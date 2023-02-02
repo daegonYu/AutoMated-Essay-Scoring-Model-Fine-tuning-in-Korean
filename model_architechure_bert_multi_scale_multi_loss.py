@@ -177,6 +177,11 @@ class DocumentBertScoringModel():
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=0.005)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=0.005)
         
+        word_document_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=word_document_optimizer,
+                                        lr_lambda=lambda epoch: 0.95 ** epoch)
+        chunk_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=chunk_optimizer,
+                                        lr_lambda=lambda epoch: 0.95 ** epoch)
+        
         correct_output = None
         if isinstance(data, tuple) and len(data) == 2:
             # 총 데이터 개수 144 (주어진 데이터의 경우)
@@ -230,15 +235,16 @@ class DocumentBertScoringModel():
                 chunk_optimizer.step()
                 word_document_optimizer.zero_grad()
                 chunk_optimizer.zero_grad()
-                
+            word_document_scheduler.step()
+            chunk_scheduler.step()
         
         # 모델 저장 nn.Module 사용시로 알고 있다.
         model_save = False
-        _PATH = '/home/daegon/Multi-Scale-BERT-AES/models'
-        if model_save:
-            torch.save(self.bert_regression_by_word_document.state_dict(), _PATH+'/word_doc.pt')
-            torch.save(self.bert_regression_by_chunk.state_dict(), _PATH+'/chunk.pt')
-            print('success the model save')
+        # _PATH = '/home/daegon/Multi-Scale-BERT-AES/models'
+        # if model_save:
+        #     torch.save(self.bert_regression_by_word_document.state_dict(), _PATH+'/word_doc.pt')
+        #     torch.save(self.bert_regression_by_chunk.state_dict(), _PATH+'/chunk.pt')
+        #     print('success the model save')
         
         # 손실그래프 확인하기
         graph = True

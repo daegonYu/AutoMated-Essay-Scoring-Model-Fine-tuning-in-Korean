@@ -2,6 +2,7 @@ import torch, configargparse
 from data import load_asap_data
 from model_architechure_bert_multi_scale_multi_loss import DocumentBertScoringModel
 
+import gc
 
 def _initialize_arguments(p: configargparse.ArgParser):
     p.add('--bert_model_path', help='bert_model_path')
@@ -25,6 +26,8 @@ def _initialize_arguments(p: configargparse.ArgParser):
     args.model_directory = "%s/%s_%s" % (args.model_directory, args.prompt, args.fold)
     args.bert_model_path = args.model_directory
 
+    print('--------------------------------')
+    print('GPU 사용 여부 : ', torch.cuda.is_available())
     if torch.cuda.is_available() and args.cuda:
         args.device = 'cuda'
     else:
@@ -33,6 +36,9 @@ def _initialize_arguments(p: configargparse.ArgParser):
 
 
 if __name__ == "__main__":
+
+    gc.collect()
+    torch.cuda.empty_cache()
     # initialize arguments
     p = configargparse.ArgParser(default_config_files=["asap.ini"])
     args = _initialize_arguments(p)
