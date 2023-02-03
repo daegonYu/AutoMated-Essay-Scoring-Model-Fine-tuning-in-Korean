@@ -220,7 +220,7 @@ class DocumentBertScoringModel():
                 mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']])  # 평균되어서 나온다.
                 sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']]) 
                 mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']]) # 평균되어서 나온다.
-                a=1;b=1;c=1
+                a=2;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
                 print('Epoch : {}, iter: {}, Loss : {}',epoch, i, total_loss.item())
                 loss_list.append(total_loss.item())
