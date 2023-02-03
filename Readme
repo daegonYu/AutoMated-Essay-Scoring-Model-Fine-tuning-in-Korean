@@ -1,1 +1,15 @@
-AI : 자동에세이점수부여 
+자동에세이점수부여 모델 
+
+
+에세이를 넣으면 점수가 도출됨
+나의 글쓰기 능력을 평가해 볼 수 있음
+
+
+
+모델 구조 
+git : https://github.com/lingochamp/multi-scale-bert-aes
+bert : bert-base-multilingual-cased
+
+
+데이터셋 
+AI HUB : 한국어 에세이 데이터셋 사용 예정
