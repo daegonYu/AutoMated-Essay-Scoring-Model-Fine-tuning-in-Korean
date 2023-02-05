@@ -1,1 +1,2 @@
 pearson: 0.687 qwk: 0.641
+pearson: 0.75 	 qwk: 0.712

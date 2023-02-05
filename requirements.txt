@@ -3,3 +3,5 @@ configargparse
 scikit-learn
 matplotlib
 protobuf==3.20.*
+# conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=11.0 -c pytorch
+# 따로 명령어 실행, cuda = 11.0 버전
