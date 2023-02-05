@@ -39,8 +39,8 @@ def cl_loss_func(embedding, label):
         embed_i = torch.squeeze(embedding[idx])
         embed_1 = torch.squeeze(embedding[rand_1])
         embed_2 = torch.squeeze(embedding[rand_2])       
-        if a>b:
-            loss += torch.max(torch.tensor([cos(embed_i,embed_1)-cos(embed_i,embed_2), 0]))
+        if a>b:     # a가 차이가 크다. => a의 유사도가 낮다. // torch.max(torch.tensor형, not list)
+            loss += torch.max(torch.tensor([cos(embed_i,embed_1)-cos(embed_i,embed_2), 0])) # a와의 유사도가 더 높게 나온다면
         elif a<b:   
             loss += torch.max(torch.tensor([-cos(embed_i,embed_1)+cos(embed_i,embed_2), 0]))
         else:   # a=b
