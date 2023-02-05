@@ -9,3 +9,6 @@ f3
 bertLstm : Linear 계층 추가 (hidden_size,hidden_size)
 sim loss 에 평균 삭제
 cl loss 추가
+
+다음실험
+cl loss bias 3정도로 추가하여 실험해보기 이전 실험 : 0
