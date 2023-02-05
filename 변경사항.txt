@@ -8,3 +8,4 @@ mse, sim, mr = 2,1,1 ?      # 저장된 값은 2인데 2로 했는지 1로 했�
 f3
 bertLstm : Linear 계층 추가 (hidden_size,hidden_size)
 sim loss 에 평균 삭제
+cl loss 추가
