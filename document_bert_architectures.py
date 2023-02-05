@@ -22,14 +22,20 @@ class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  # 원본    
             nn.Dropout(p=bert_model_config.hidden_dropout_prob),
             nn.Linear(bert_model_config.hidden_size, 1)      # 회귀이기때문에 마지막은 1로 한다.
         )
+        # 수정사항
+        self.linear1 = nn.Sequential(
+            nn.Dropout(p=bert_model_config.hidden_dropout_prob),
+            nn.Linear(bert_model_config.hidden_size, bert_model_config.hidden_size)
+        )
         self.w_omega = nn.Parameter(torch.Tensor(bert_model_config.hidden_size, bert_model_config.hidden_size))
         self.b_omega = nn.Parameter(torch.Tensor(1, bert_model_config.hidden_size))
         self.u_omega = nn.Parameter(torch.Tensor(bert_model_config.hidden_size, 1))
-
+        
         nn.init.uniform_(self.w_omega, -0.1, 0.1)
         nn.init.uniform_(self.u_omega, -0.1, 0.1)
         nn.init.uniform_(self.b_omega, -0.1, 0.1)
         self.mlp.apply(init_weights)
+        # self.linear1.apply(init_weights)
 
     def forward(self, document_batch: torch.Tensor, device='cpu', bert_batch_size=0):
         bert_output = torch.zeros(size=(document_batch.shape[0],
@@ -49,12 +55,12 @@ class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  # 원본    
         attention_hidden = output * attention_score  # (batch_size, seq_len, num_hiddens)
         attention_hidden = torch.sum(attention_hidden, dim=1)  # (batch_size, num_hiddens)
         prediction = self.mlp(attention_hidden)
+        prediction2 = self.linear1(attention_hidden)
         assert prediction.shape[0] == document_batch.shape[0]
-        return prediction
+        return prediction, prediction2
 
 
-class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel): # 원본
-# class DocumentBertCombineWordDocumentLinear(nn.Module):
+class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel): 
     def __init__(self, bert_model_config: BertConfig):
         super(DocumentBertCombineWordDocumentLinear, self).__init__(bert_model_config)
         self.bert = BertModel(bert_model_config)
@@ -65,7 +71,12 @@ class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel): # 원본
             nn.Dropout(p=bert_model_config.hidden_dropout_prob),
             nn.Linear(bert_model_config.hidden_size * 2, 1)     # 회귀이기때문에 마지막은 1로 한다.
         )
+        self.linear1 = nn.Sequential(
+            nn.Dropout(p=bert_model_config.hidden_dropout_prob),
+            nn.Linear(bert_model_config.hidden_size * 2, bert_model_config.hidden_size) 
+        )
         self.mlp.apply(init_weights)
+        # self.linear1.apply(init_weights)
 
     def forward(self, document_batch: torch.Tensor, device='cpu'):
         bert_output = torch.zeros(size=(document_batch.shape[0],
@@ -80,5 +91,7 @@ class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel): # 원본
             bert_output[doc_id][:self.bert_batch_size] = torch.cat((bert_token_max.values, all_bert_output_info[1]), 1)
 
         prediction = self.mlp(bert_output.view(bert_output.shape[0], -1))
+        prediction2 = self.linear1(bert_output.view(bert_output.shape[0], -1))
+        
         assert prediction.shape[0] == document_batch.shape[0]
-        return prediction
+        return prediction, prediction2

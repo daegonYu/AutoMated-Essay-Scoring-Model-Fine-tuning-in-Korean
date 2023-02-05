@@ -3,3 +3,8 @@ f2
 배치사이즈 32 -> 16
 스케줄러 추가; LambdaLR
 mse, sim, mr = 2,1,1 ?      # 저장된 값은 2인데 2로 했는지 1로 했는지 확실하지가 않다.
+
+
+f3
+bertLstm : Linear 계층 추가 (hidden_size,hidden_size)
+sim loss 에 평균 삭제

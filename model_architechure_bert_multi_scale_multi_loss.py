@@ -22,12 +22,39 @@ from torch.nn import functional as F
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import numpy as np
+import torch.nn as nn
+
+def cl_loss_func(embedding, label):
+    loss = torch.tensor(0, dtype=torch.float32)
+    cos = nn.CosineSimilarity(dim=0, eps=1e-8)      # dim=0 여기서 batch는 들어가지 않는다.
+    for idx in range(label.shape[0]):
+        # 랜덤하게 2개 선택
+        while True:
+            rand_idxs = np.random.choice(label.shape[0], 2, replace=False) # replace=False, 비복원추출
+            if idx not in rand_idxs:
+                break
+        rand_1 = rand_idxs[0]; rand_2 = rand_idxs[1]
+        a = torch.abs(label[idx] - label[rand_1])
+        b = torch.abs(label[idx] - label[rand_2])
+        embed_i = torch.squeeze(embedding[idx])
+        embed_1 = torch.squeeze(embedding[rand_1])
+        embed_2 = torch.squeeze(embedding[rand_2])       
+        if a>b:
+            loss += torch.max(torch.tensor([cos(embed_i,embed_1)-cos(embed_i,embed_2), 0]))
+        elif a<b:   
+            loss += torch.max(torch.tensor([-cos(embed_i,embed_1)+cos(embed_i,embed_2), 0]))
+        else:   # a=b
+            loss += torch.max(torch.tensor([torch.abs(cos(embed_i,embed_1)-cos(embed_i,embed_2)), 0]))
+    return loss
 
 def sim(y,yhat):
     e = torch.tensor(1e-8)
     m = torch.pow(torch.pow(y,2).sum(),0.5) * torch.pow(torch.pow(yhat,2).sum(),0.5)
-    similarity = torch.sum(y*yhat) / torch.max(m,e)
-    return (1- similarity)/yhat.size(0)
+    similarity = torch.sum(y*yhat) / torch.max(torch.tensor([m,e]))
+    # cos = nn.CosineSimilarity(dim=0, eps=1e-8)      # batchsize만큼의 점수리스트가 들어옴으로 dim=0
+    # loss = 1- cos(y,yhat)
+    loss = 1 - similarity
+    return loss            # 논문보니 평균내지 않는다.
 
 def mr_loss_func(pred,label):
     mr_loss = 0
@@ -43,6 +70,15 @@ def mr_loss_func(pred,label):
 
 class DocumentBertScoringModel():
     def __init__(self, args=None):
+        # 수정
+        self.linear1 = nn.Sequential(
+            nn.Dropout(p=0.1),
+            nn.Linear(768, 1)     # 회귀이기때문에 마지막은 1로 한다.
+        )
+        if isinstance(self.linear1, nn.Linear):
+            torch.nn.init.xavier_uniform_(self.linear1.weight)     # torch.nn.init.xavier_uniform 대신 torch.nn.init.xavier_uniform_ : 언더바 붙인걸 사용한다고 한다.
+            self.linear1.bias.data.fill_(0)     # bias를 7씩이나 줬는데 3개의 추정값을 더하므로 여기서는 bias를 0으로 채워보자.
+        
         if args is not None:
             self.args = vars(args)
         self.bert_tokenizer = BertTokenizer.from_pretrained(self.args['bert_model_path'])       # 토크나이저는 vacob.txt 파일 기준으로
@@ -206,27 +242,38 @@ class DocumentBertScoringModel():
         for epoch in tqdm(range(epochs)):
             for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
                 batch_document_tensors_word_document = document_representations_word_document[i:i + self.args['batch_size']].to(device=self.args['device'])
-                batch_predictions_word_document = self.bert_regression_by_word_document(batch_document_tensors_word_document, device=self.args['device'])
+                batch_predictions_word_document,batch_predictions_word_document2 = self.bert_regression_by_word_document(batch_document_tensors_word_document, device=self.args['device'])
                 batch_predictions_word_document = torch.squeeze(batch_predictions_word_document)
+                batch_predictions_word_document2 = torch.squeeze(batch_predictions_word_document2)
 
                 batch_predictions_word_chunk_sentence_doc = batch_predictions_word_document
+                batch_predictions_word_chunk_sentence_doc2 = batch_predictions_word_document2
                 for chunk_index in range(len(self.chunk_sizes)):
                     batch_document_tensors_chunk = document_representations_chunk_list[chunk_index][i:i + self.args['batch_size']].to(
                         device=self.args['device'])
-                    batch_predictions_chunk = self.bert_regression_by_chunk(
+                    batch_predictions_chunk, batch_predictions_chunk2 = self.bert_regression_by_chunk(
                         batch_document_tensors_chunk,
                         device=self.args['device'],
                         bert_batch_size=self.bert_batch_sizes[chunk_index]
                     )
                     batch_predictions_chunk = torch.squeeze(batch_predictions_chunk)
+                    batch_predictions_chunk2 = torch.squeeze(batch_predictions_chunk2)
                     batch_predictions_word_chunk_sentence_doc = torch.add(batch_predictions_word_chunk_sentence_doc, batch_predictions_chunk)
-                
+                    # 수정
+                    # 원소별 덧셈
+                    batch_predictions_representation = torch.add(batch_predictions_word_chunk_sentence_doc2, batch_predictions_chunk2)
+                    cl_loss = cl_loss_func(batch_predictions_representation,correct_output[i:i + self.args['batch_size']] )
+                    cl_prediction = self.linear1(batch_predictions_representation)  # bs,768 -> bs,1 // 여기선 bias = 0 // 다른 mlp는 7
+                    cl_prediction = torch.squeeze(cl_prediction, dim=1)
+                    # 3개의 점수를 합해준다.
+                    batch_predictions_word_chunk_sentence_doc = torch.add(batch_predictions_word_chunk_sentence_doc,cl_prediction)
+                    
                 # F를 사용한 loss function은 평균 내서 나온다.
                 mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']])  # 평균되어서 나온다.
                 sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']]) 
                 mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']]) # 평균되어서 나온다.
-                a=2;b=1;c=1
-                total_loss = a*mse_loss + b*sim_loss + c*mr_loss
+                a=2;b=1;c=1;d=1
+                total_loss = a*mse_loss + b*sim_loss + c*mr_loss + d*cl_loss
                 print('Epoch : {}, iter: {}, Loss : {}',epoch, i, total_loss.item())
                 loss_list.append(total_loss.item())
                 
