@@ -1,6 +1,7 @@
 import os
 import torch
 from transformers import BertConfig, CONFIG_NAME, BertTokenizer
+from transformers import AutoModel, AutoTokenizer
 from document_bert_architectures import DocumentBertCombineWordDocumentLinear, DocumentBertSentenceChunkAttentionLSTM
 from evaluate import evaluation
 from encoder import encode_documents
@@ -34,6 +35,7 @@ def sim(y,yhat):
     return loss            # 논문보니 평균내지 않는다.
 
 def mr_loss_func(pred,label):
+    # 배치사이즈가 1이 되면 에러가 나온다.
     mr_loss = 0
     for i in range(pred.size(0)):
         y = pred - pred[i]
@@ -51,7 +53,9 @@ class DocumentBertScoringModel():
             self.args = vars(args)
         # self.bert_tokenizer = BertTokenizer.from_pretrained(self.args['bert_model_path'])       # 토크나이저는 vacob.txt 파일 기준으로
         # 토크나이저
-        self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased', do_lower_case=False)
+        # self.bert_tokenizer = BertTokenizer.from_pretrained('klue/bert-base')
+        self.bert_tokenizer = AutoTokenizer.from_pretrained("klue/bert-base")
+
         # config설정
         if os.path.exists(self.args['bert_model_path']):
             if os.path.exists(os.path.join(self.args['bert_model_path'], CONFIG_NAME)):
@@ -98,10 +102,10 @@ class DocumentBertScoringModel():
             # from_pretrained()이 인수로는 (pretrained_model_name_or_path, config)가 있는데 pretrained된 모델 선택과 config에 계층에 대한 정보를 넣어줘야 한다.
             # 둘다 pretrain 모델로 bert-base-uncased가 맞는 것 같다. longformer를 사용하면 초기화되는 파라미터들이 너무 많아서 그런지 학습 진행이 안된다.
             self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
-                "bert-base-multilingual-cased",
+                "klue/bert-base",
             )
             self.bert_regression_by_chunk = DocumentBertSentenceChunkAttentionLSTM.from_pretrained(
-                "bert-base-multilingual-cased"
+                "klue/bert-base"
             )
             # 아래 원본
             # self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
@@ -205,6 +209,7 @@ class DocumentBertScoringModel():
                 document_sequence_lengths_chunk_list.append(document_sequence_lengths_chunk)
             correct_output = torch.FloatTensor(data[1])     # data[1]에는 정답이 들어있다.
 
+        # 모델 device에 통일
         self.bert_regression_by_word_document.to(device=self.args['device'])
         self.bert_regression_by_chunk.to(device=self.args['device'])
 
@@ -213,6 +218,7 @@ class DocumentBertScoringModel():
         loss_list = []
         for epoch in tqdm(range(epochs)):
             for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
+                # 배치마다 device를 통일 시켜줘야 한다.
                 batch_document_tensors_word_document = document_representations_word_document[i:i + self.args['batch_size']].to(device=self.args['device'])
                 batch_predictions_word_document = self.bert_regression_by_word_document(batch_document_tensors_word_document, device=self.args['device'])
                 batch_predictions_word_document = torch.squeeze(batch_predictions_word_document)
@@ -230,9 +236,10 @@ class DocumentBertScoringModel():
                     batch_predictions_word_chunk_sentence_doc = torch.add(batch_predictions_word_chunk_sentence_doc, batch_predictions_chunk)
                 
                 # F를 사용한 loss function은 평균 내서 나온다.
-                mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']])  # 평균되어서 나온다.
-                sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']]) 
-                mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']]) # 평균되어서 나온다.
+                # 배치마다 device를 통일 시켜줘야 한다.
+                mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device']))  # 평균되어서 나온다.
+                sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) 
+                mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
                 a=2;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
                 print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
