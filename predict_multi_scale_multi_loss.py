@@ -33,7 +33,7 @@ def _initialize_arguments(p: configargparse.ArgParser):
     if torch.cuda.is_available() and args.cuda:
         args.device = 'cuda'
     else:
-        args.dev = 'cpu'
+        args.device = 'cpu'
     return args
 
 

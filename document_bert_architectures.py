@@ -12,7 +12,6 @@ def init_weights(m):
 
 
 class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  # 원본    # 이거 초기화할때는 nn.Module 써야하나?? 그래야하나.........그럼 pretrained()만 바꿔주면 된다.
-# class DocumentBertSentenceChunkAttentionLSTM(nn.Module): 
     def __init__(self, bert_model_config: BertConfig):
         super(DocumentBertSentenceChunkAttentionLSTM, self).__init__(bert_model_config)
         self.bert = BertModel(bert_model_config)  
