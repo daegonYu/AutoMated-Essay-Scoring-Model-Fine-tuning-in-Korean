@@ -58,7 +58,8 @@ if __name__ == "__main__":
     tr_essay1, test_essay1, tr_logical_points, test_logical_points = train_test_split(essays, logical_points, test_size=0.2, random_state=321)
     tr_essay2, test_essay2, tr_novelty_points, test_novelty_points = train_test_split(essays, novelty_points, test_size=0.2, random_state=321)
     tr_essay3, test_essay3, tr_persuasive_points, test_persuasive_points = train_test_split(essays, persuasive_points, test_size=0.2, random_state=321)
-    
+    # tr_essay1 == tr_essay2 == tr_essay3 
+    # test_essay1 == test_essay2 == test_essay3
     
     # if_sample=True
     # if if_sample:   # test data
@@ -91,15 +92,15 @@ if __name__ == "__main__":
     print('-'*20)
     print('model1 finish')
     print('-'*20)
-    model2.fit((tr_essay2, tr_novelty_points))
+    model2.fit((tr_essay1, tr_novelty_points))
     print('-'*20)
     print('model2 finish')
     print('-'*20)    
-    model3.fit((tr_essay3, tr_persuasive_points))
+    model3.fit((tr_essay1, tr_persuasive_points))
     print('-'*20)
     print('model3 finish')
     print('-'*20)
         
     model1.predict_for_regress((test_essay1, test_logical_points))
-    model2.predict_for_regress((test_essay2, test_novelty_points))
-    model3.predict_for_regress((test_essay3, test_persuasive_points))
+    model2.predict_for_regress((test_essay1, test_novelty_points))
+    model3.predict_for_regress((test_essay1, test_persuasive_points))
