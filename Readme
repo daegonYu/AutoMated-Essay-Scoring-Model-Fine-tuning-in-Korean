@@ -13,3 +13,8 @@ bert : bert-base-multilingual-cased
 
 데이터셋 
 AI HUB : 한국어 에세이 데이터셋 사용 예정
+or 
+창의 에세이 데이터 셋 사용 예정
+
+
+모델 돌리기전에asap.ini 경로 확인 필요
