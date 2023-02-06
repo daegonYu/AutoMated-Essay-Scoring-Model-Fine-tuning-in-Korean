@@ -5,7 +5,7 @@
             "name": "Paper debug",
             "type": "python",
             "request": "launch",
-            "program": "/home/daegon/Multi-Scale-BERT-AES/predict_multi_scale_multi_loss.py",
+            "program": "/home/daegon/AES/predict_multi_scale_multi_loss.py",
             "console": "integratedTerminal",
             "justMyCode": false
         },

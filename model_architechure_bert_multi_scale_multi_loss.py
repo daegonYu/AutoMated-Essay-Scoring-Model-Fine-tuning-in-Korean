@@ -25,6 +25,7 @@ from tqdm import tqdm
 import numpy as np
 import os.path
 
+
 def sim(y,yhat):
     e = torch.tensor(1e-8)
     m = torch.pow(torch.pow(y,2).sum(),0.5) * torch.pow(torch.pow(yhat,2).sum(),0.5)
@@ -176,7 +177,7 @@ class DocumentBertScoringModel():
         print("qwk:", float(test_eva_res[8]))
         
         # txt 파일에 이어쓰기
-        f = open('/home/daegon/Multi-Scale-BERT-AES/loss_eval/eval.txt','a')
+        f = open('./loss_eval/eval.txt','a')
         f.write("\npearson: {} \t qwk: {}".format(float(test_eva_res[7]),float(test_eva_res[8])))
         f.close()
         
@@ -185,7 +186,7 @@ class DocumentBertScoringModel():
     def fit(self, data):    # 학습하는 부분 (학습데이터)
         lr = 6e-5
         # epoch 1/4 해서 실험
-        epochs = 1     # 80
+        epochs = 20     # 80
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=0.005)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=0.005)
         
@@ -267,14 +268,15 @@ class DocumentBertScoringModel():
             plt.plot(range(len(loss_list)),loss_list)
             plt.show()
             loss_list = np.array(loss_list)
-            np.save('/home/daegon/Multi-Scale-BERT-AES/loss_eval/loss_1.npy',loss_list)
+            np.save('./loss_eval/loss_1.npy',loss_list)
             
         # pretrained 모델 저장하기
         _save = True
         for i in range(1,11):
-            if os.path.exists('/home/daegon/Multi-Scale-BERT-AES/models/word_doc_model.bin{}'.format(i)):
+            if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
                 continue
             else :
-                self.bert_regression_by_word_document.save_pretrained('/home/daegon/Multi-Scale-BERT-AES/models/word_doc_model.bin{}'.format(i))
-                self.bert_regression_by_chunk.save_pretrained('/home/daegon/Multi-Scale-BERT-AES/models/chunk_model.bin{}'.format(i))
+                self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
+                self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
+                break
     

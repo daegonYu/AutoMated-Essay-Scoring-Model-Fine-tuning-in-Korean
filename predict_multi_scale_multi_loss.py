@@ -47,12 +47,12 @@ if __name__ == "__main__":
     print(args)
 
     # load train data
-    essay_points = pd.read_csv('/home/daegon/AES/datatouch/korproject/kor_essayset2_point.csv',index_col=0)
+    essay_points = pd.read_csv('./datatouch/korproject/kor_essayset2_point.csv',index_col=0)
     logical_points = essay_points.논리성.to_list()
     novelty_points = essay_points.참신성.to_list()
     persuasive_points = essay_points.설득력.to_list()
     
-    essays = pd.read_csv('/home/daegon/AES/datatouch/korproject/kor_essayset2.csv', index_col=0)
+    essays = pd.read_csv('./datatouch/korproject/kor_essayset2.csv', index_col=0)
     essays = essays.essay.to_list()
     
     tr_essay1, test_essay1, tr_logical_points, test_logical_points = train_test_split(essays, logical_points, test_size=0.2, random_state=321)
