@@ -22,6 +22,7 @@ from torch.nn import functional as F
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import numpy as np
+import os.path
 
 def sim(y,yhat):
     e = torch.tensor(1e-8)
@@ -48,7 +49,10 @@ class DocumentBertScoringModel():
     def __init__(self, args=None):
         if args is not None:
             self.args = vars(args)
-        self.bert_tokenizer = BertTokenizer.from_pretrained(self.args['bert_model_path'])       # 토크나이저는 vacob.txt 파일 기준으로
+        # self.bert_tokenizer = BertTokenizer.from_pretrained(self.args['bert_model_path'])       # 토크나이저는 vacob.txt 파일 기준으로
+        # 토크나이저
+        self.bert_tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased', do_lower_case=False)
+        # config설정
         if os.path.exists(self.args['bert_model_path']):
             if os.path.exists(os.path.join(self.args['bert_model_path'], CONFIG_NAME)):
                 config = BertConfig.from_json_file(os.path.join(self.args['bert_model_path'], CONFIG_NAME))
@@ -58,6 +62,7 @@ class DocumentBertScoringModel():
                 raise ValueError("Cannot find a configuration for the BERT based model you are attempting to load.")
         else:
             config = BertConfig.from_pretrained(self.args['bert_model_path'])
+            # config는 제외하자.
         self.config = config
         self.prompt = int(args.prompt[1])
         chunk_sizes_str = self.args['chunk_sizes']
@@ -93,11 +98,10 @@ class DocumentBertScoringModel():
             # from_pretrained()이 인수로는 (pretrained_model_name_or_path, config)가 있는데 pretrained된 모델 선택과 config에 계층에 대한 정보를 넣어줘야 한다.
             # 둘다 pretrain 모델로 bert-base-uncased가 맞는 것 같다. longformer를 사용하면 초기화되는 파라미터들이 너무 많아서 그런지 학습 진행이 안된다.
             self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
-                "bert-base-uncased",
-                config=config
+                "bert-base-multilingual-cased",
             )
             self.bert_regression_by_chunk = DocumentBertSentenceChunkAttentionLSTM.from_pretrained(
-                "bert-base-uncased"
+                "bert-base-multilingual-cased"
             )
             # 아래 원본
             # self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
@@ -176,7 +180,8 @@ class DocumentBertScoringModel():
 
     def fit(self, data):    # 학습하는 부분 (학습데이터)
         lr = 6e-5
-        epochs = 80     # 80
+        # epoch 1/4 해서 실험
+        epochs = 1     # 80
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=0.005)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=0.005)
         
@@ -230,7 +235,7 @@ class DocumentBertScoringModel():
                 mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']]) # 평균되어서 나온다.
                 a=2;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
-                print('Epoch : {}, iter: {}, Loss : {}',epoch, i, total_loss.item())
+                print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
                 loss_list.append(total_loss.item())
                 
                 total_loss.backward()
@@ -250,7 +255,7 @@ class DocumentBertScoringModel():
         #     print('success the model save')
         
         # 손실그래프 확인하기
-        graph = True
+        graph = False
         if graph:
             plt.plot(range(len(loss_list)),loss_list)
             plt.show()
@@ -259,7 +264,10 @@ class DocumentBertScoringModel():
             
         # pretrained 모델 저장하기
         _save = True
-        if _save:
-            self.bert_regression_by_word_document.save_pretrained('/home/daegon/Multi-Scale-BERT-AES/models/word_doc_model.bin')
-            self.bert_regression_by_chunk.save_pretrained('/home/daegon/Multi-Scale-BERT-AES/models/chunk_model.bin')
+        for i in range(1,11):
+            if os.path.exists('/home/daegon/Multi-Scale-BERT-AES/models/word_doc_model.bin{}'.format(i)):
+                continue
+            else :
+                self.bert_regression_by_word_document.save_pretrained('/home/daegon/Multi-Scale-BERT-AES/models/word_doc_model.bin{}'.format(i))
+                self.bert_regression_by_chunk.save_pretrained('/home/daegon/Multi-Scale-BERT-AES/models/chunk_model.bin{}'.format(i))
     

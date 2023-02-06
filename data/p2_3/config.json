@@ -1,0 +1,18 @@
+{
+  "_name_or_path": "/riseml/workspace/yongjie/scoring/asap_bert_lstm/result_v2/asap_v2_bert_tok_doc_chunk_90_30_130_10_lr0.00006_decay0.005_pretrain/p8/model/checkpoint_best/chunk",
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "type_vocab_size": 2,
+  "vocab_size": 30522
+}
