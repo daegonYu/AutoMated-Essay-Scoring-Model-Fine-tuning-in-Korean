@@ -53,8 +53,7 @@ class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  # 원본    
         return prediction
 
 
-class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel): # 원본
-# class DocumentBertCombineWordDocumentLinear(nn.Module):
+class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel): 
     def __init__(self, bert_model_config: BertConfig):
         super(DocumentBertCombineWordDocumentLinear, self).__init__(bert_model_config)
         self.bert = BertModel(bert_model_config)

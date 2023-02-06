@@ -26,8 +26,11 @@ import numpy as np
 def sim(y,yhat):
     e = torch.tensor(1e-8)
     m = torch.pow(torch.pow(y,2).sum(),0.5) * torch.pow(torch.pow(yhat,2).sum(),0.5)
-    similarity = torch.sum(y*yhat) / torch.max(m,e)
-    return (1- similarity)/yhat.size(0)
+    similarity = torch.sum(y*yhat) / torch.max(torch.tensor([m,e]))
+    # cos = nn.CosineSimilarity(dim=0, eps=1e-8)      # batchsize만큼의 점수리스트가 들어옴으로 dim=0
+    # loss = 1- cos(y,yhat)
+    loss = 1 - similarity
+    return loss            # 논문보니 평균내지 않는다.
 
 def mr_loss_func(pred,label):
     mr_loss = 0
@@ -166,7 +169,7 @@ class DocumentBertScoringModel():
         
         # txt 파일에 이어쓰기
         f = open('/home/daegon/Multi-Scale-BERT-AES/loss_eval/eval.txt','a')
-        f.write("pearson: {} \t qwk: {}".format(float(test_eva_res[7]),float(test_eva_res[8])))
+        f.write("\npearson: {} \t qwk: {}".format(float(test_eva_res[7]),float(test_eva_res[8])))
         f.close()
         
         return float(test_eva_res[7]), float(test_eva_res[8])
