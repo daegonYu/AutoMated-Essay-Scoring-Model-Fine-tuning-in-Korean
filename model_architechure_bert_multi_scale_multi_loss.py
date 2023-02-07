@@ -49,24 +49,24 @@ def mr_loss_func(pred,label):
     return mr_loss/label.size(0)
 
 class DocumentBertScoringModel():
-    def __init__(self, args=None):
+    def __init__(self, load_model, chunk_model_path,word_doc_model_path,config, args=None):
         if args is not None:
             self.args = vars(args)
         # self.bert_tokenizer = BertTokenizer.from_pretrained(self.args['bert_model_path'])       # 토크나이저는 vacob.txt 파일 기준으로
         # 토크나이저
         # self.bert_tokenizer = BertTokenizer.from_pretrained('klue/bert-base')
-        self.bert_tokenizer = AutoTokenizer.from_pretrained("klue/bert-base")
+        self.bert_tokenizer = AutoTokenizer.from_pretrained("klue/bert-base")   # transformer = 4.7.0 
 
         # config설정
-        if os.path.exists(self.args['bert_model_path']):
-            if os.path.exists(os.path.join(self.args['bert_model_path'], CONFIG_NAME)):
-                config = BertConfig.from_json_file(os.path.join(self.args['bert_model_path'], CONFIG_NAME))
-            elif os.path.exists(os.path.join(self.args['bert_model_path'], 'bert_config.json')):
-                config = BertConfig.from_json_file(os.path.join(self.args['bert_model_path'], 'bert_config.json'))
-            else:
-                raise ValueError("Cannot find a configuration for the BERT based model you are attempting to load.")
-        else:
-            config = BertConfig.from_pretrained(self.args['bert_model_path'])
+        # if os.path.exists(self.args['bert_model_path']):
+        #     if os.path.exists(os.path.join(self.args['bert_model_path'], CONFIG_NAME)):
+        #         config = BertConfig.from_json_file(os.path.join(self.args['bert_model_path'], CONFIG_NAME))
+        #     elif os.path.exists(os.path.join(self.args['bert_model_path'], 'bert_config.json')):
+        #         config = BertConfig.from_json_file(os.path.join(self.args['bert_model_path'], 'bert_config.json'))
+        #     else:
+        #         raise ValueError("Cannot find a configuration for the BERT based model you are attempting to load.")
+        # else:
+        #     config = BertConfig.from_pretrained(self.args['bert_model_path'])
             # config는 제외하자.
         self.config = config
         self.prompt = int(args.prompt[1])
@@ -84,15 +84,19 @@ class DocumentBertScoringModel():
         print("prompt:%d, asap_essay_length:%d" % (self.prompt, asap_essay_lengths[self.prompt]))
         print("chunk_sizes_str:%s, bert_batch_size_str:%s" % (chunk_sizes_str, bert_batch_size_str))
         
-        load_model =False
+
         # 저장된 파라미터 불러오기 => 
         if load_model:
-            self.bert_regression_by_word_document = torch.load('./models/word_doc.pt')
-            self.bert_regression_by_chunk = torch.load('./models/chunk.pt')
+            self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
+                word_doc_model_path,
+                config=config)
+            self.bert_regression_by_chunk = DocumentBertSentenceChunkAttentionLSTM.from_pretrained(
+                chunk_model_path,
+                config=config)
             
             # 추가학습시키는 거 아니면 eval 모드로 변경해두자.
-            self.bert_regression_by_word_document.eval()
-            self.bert_regression_by_chunk.eval()
+            # self.bert_regression_by_word_document.eval()
+            # self.bert_regression_by_chunk.eval()
             
         # 초기화된 모델 사용하기
         else:
@@ -118,10 +122,11 @@ class DocumentBertScoringModel():
             #     config=config)
         
 
-    def predict_for_regress(self, data):
+    def predict_for_regress(self, data):    # data = 한글에세이, 정답
         # test 데이터가 들어가서 eval 결과 확인하기
         correct_output = None
         if isinstance(data, tuple) and len(data) == 2:
+            # 토크나이징
             document_representations_word_document, document_sequence_lengths_word_document = encode_documents(
                 data[0], self.bert_tokenizer, max_input_length=512)
             document_representations_chunk_list, document_sequence_lengths_chunk_list = [], []
@@ -142,7 +147,7 @@ class DocumentBertScoringModel():
 
         with torch.no_grad():       
             predictions = torch.empty((document_representations_word_document.shape[0]))
-            for i in range(0, document_representations_word_document.shape[0], self.args['batch_size']):
+            for i in range(0, document_representations_word_document.shape[0], self.args['batch_size']):    # 1 iteration
                 batch_document_tensors_word_document = document_representations_word_document[i:i + self.args['batch_size']].to(device=self.args['device'])
                 batch_predictions_word_document = self.bert_regression_by_word_document(batch_document_tensors_word_document, device=self.args['device'])
                 batch_predictions_word_document = torch.squeeze(batch_predictions_word_document)
@@ -187,8 +192,9 @@ class DocumentBertScoringModel():
         lr = 6e-5
         # epoch 1/4 해서 실험
         epochs = 20     # 80
-        word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=0.005)
-        chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=0.005)
+        weight_decay = 0.001    # 논문 : 0.005
+        word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
+        chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
         
         word_document_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=word_document_optimizer,
                                         lr_lambda=lambda epoch: 0.95 ** epoch)
@@ -197,7 +203,6 @@ class DocumentBertScoringModel():
         
         correct_output = None
         if isinstance(data, tuple) and len(data) == 2:
-            # 총 데이터 개수 144 (주어진 데이터의 경우)
             document_representations_word_document, document_sequence_lengths_word_document = encode_documents(
                 data[0], self.bert_tokenizer, max_input_length=512)
             document_representations_chunk_list, document_sequence_lengths_chunk_list = [], []
@@ -213,8 +218,11 @@ class DocumentBertScoringModel():
         # 모델 device에 통일
         self.bert_regression_by_word_document.to(device=self.args['device'])
         self.bert_regression_by_chunk.to(device=self.args['device'])
-
-        self.bert_regression_by_word_document.train()
+        
+        self.bert_regression_by_word_document.zero_grad()   # model gradient 초기화
+        self.bert_regression_by_chunk.zero_grad()
+        
+        self.bert_regression_by_word_document.train()   # train 모드로 변경
         self.bert_regression_by_chunk.train()
         loss_list = []
         for epoch in tqdm(range(epochs)):
@@ -246,12 +254,15 @@ class DocumentBertScoringModel():
                 print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
                 loss_list.append(total_loss.item())
                 
-                total_loss.backward()
-                word_document_optimizer.step()
+                total_loss.backward()   # 기울기 계산
+                
+                word_document_optimizer.step()  # 파라미터 갱신
                 chunk_optimizer.step()
-                word_document_optimizer.zero_grad()
+                
+                word_document_optimizer.zero_grad() # 기울기 초기화
                 chunk_optimizer.zero_grad()
-            word_document_scheduler.step()
+                
+            word_document_scheduler.step()  # 학습률 업데이트
             chunk_scheduler.step()
         
         # 모델 저장 nn.Module 사용시로 알고 있다.
@@ -262,8 +273,8 @@ class DocumentBertScoringModel():
         #     torch.save(self.bert_regression_by_chunk.state_dict(), _PATH+'/chunk.pt')
         #     print('success the model save')
         
-        # 손실그래프 확인하기
-        graph = False
+        # 손실그래프 및 손실 값 확인하기
+        graph = True
         if graph:
             plt.plot(range(len(loss_list)),loss_list)
             plt.show()
@@ -279,4 +290,66 @@ class DocumentBertScoringModel():
                 self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
                 self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
                 break
-    
+     
+    def result_point(self, input_sentence, mode_):    # 예제 넣어보기
+        # correct_output = None
+        # 토크나이징
+        document_representations_word_document, document_sequence_lengths_word_document = encode_documents(
+            input_sentence, self.bert_tokenizer, max_input_length=512)
+        
+        document_representations_chunk_list, document_sequence_lengths_chunk_list = [], []
+        
+        for i in range(len(self.chunk_sizes)):
+            document_representations_chunk, document_sequence_lengths_chunk = encode_documents(
+                input_sentence,
+                self.bert_tokenizer,
+                max_input_length=self.chunk_sizes[i])   # 맥스길이를 chunk size로 설정
+            document_representations_chunk_list.append(document_representations_chunk)
+            document_sequence_lengths_chunk_list.append(document_sequence_lengths_chunk)    # 토크나이즈한거 다 리스트에 추가.
+        # correct_output = torch.FloatTensor(data[1])     # data[1]에는 정답이 들어있다.
+
+        self.bert_regression_by_word_document.to(device=self.args['device'])
+        self.bert_regression_by_chunk.to(device=self.args['device'])
+
+        self.bert_regression_by_word_document.eval()    # eval 모드로 변경
+        self.bert_regression_by_chunk.eval()
+
+        with torch.no_grad():           # 기울기 저장 X
+            # predictions = torch.empty((document_representations_word_document.shape[0]))
+            # 한 문장 삽입
+            document_tensors_word_document = document_representations_word_document[0:0+1].to(device=self.args['device'])
+            # 토크나이즈 한 것을 모델에 삽입
+            predictions_word_document = self.bert_regression_by_word_document(document_tensors_word_document, device=self.args['device'])
+            predictions_word_document = torch.squeeze(predictions_word_document)
+
+            predictions_word_chunk_sentence_doc = predictions_word_document
+            for chunk_index in range(len(self.chunk_sizes)):
+                document_tensors_chunk = document_representations_chunk_list[chunk_index][0:0+1].to(
+                    device=self.args['device'])
+                predictions_chunk = self.bert_regression_by_chunk(
+                    document_tensors_chunk,
+                    device=self.args['device'],
+                    bert_batch_size=self.bert_batch_sizes[chunk_index]
+                )
+                predictions_chunk = torch.squeeze(predictions_chunk)
+                predictions_word_chunk_sentence_doc = torch.add(predictions_word_chunk_sentence_doc, predictions_chunk)
+            # predictions[0] = predictions_word_chunk_sentence_doc
+            
+            pred_point = float(predictions_word_chunk_sentence_doc)
+            # pred_point range : 0~5
+            if pred_point < 0:
+                pred_point = 0
+            elif pred_point > 5:
+                pred_point = 5
+            pred_point  *= 20
+            pred_point = round(pred_point,2)
+                
+        if mode_ == 'logical':
+            print("{} 예측 점수 : {}점".format('논리성',pred_point))
+        
+        elif mode_ == 'novelty':
+            print("{} 예측 점수 : {}점".format('참신성',pred_point))
+        
+        elif mode_ == 'persuasive':
+            print("{} 예측 점수 : {}점".format('설득력',pred_point))
+            

@@ -8,7 +8,7 @@ import torch.nn.functional as F
 def init_weights(m):
     if isinstance(m, nn.Linear):
         torch.nn.init.xavier_uniform_(m.weight)     # torch.nn.init.xavier_uniform 대신 torch.nn.init.xavier_uniform_ : 언더바 붙인걸 사용한다고 한다.
-        m.bias.data.fill_(7)
+        m.bias.data.fill_(2)        # Paper : 7
 
 
 class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  # 원본    # 이거 초기화할때는 nn.Module 써야하나?? 그래야하나.........그럼 pretrained()만 바꿔주면 된다.

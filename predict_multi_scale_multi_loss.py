@@ -84,23 +84,51 @@ if __name__ == "__main__":
     print("sample number:", len(essays))
     print("label number:", len(essay_points))
 
-    model1 = DocumentBertScoringModel(args=args)
-    model2 = DocumentBertScoringModel(args=args)
-    model3 = DocumentBertScoringModel(args=args)
+    # model1 = DocumentBertScoringModel(args=args)
+    # model2 = DocumentBertScoringModel(args=args)
+    # model3 = DocumentBertScoringModel(args=args)
     
-    model1.fit((tr_essay1, tr_logical_points))
-    print('-'*20)
-    print('model1 finish')
-    print('-'*20)
-    model2.fit((tr_essay1, tr_novelty_points))
-    print('-'*20)
-    print('model2 finish')
-    print('-'*20)    
-    model3.fit((tr_essay1, tr_persuasive_points))
-    print('-'*20)
-    print('model3 finish')
-    print('-'*20)
+    load_model = True        # 평가모드
+    
+    config = './models/chunk_model.bin1/config.json'    # config는 모두 같다.
+    chunk_model_path =  './models/chunk_model.bin1'; word_doc_model_path = './models/word_doc_model.bin1' 
+    model1 = DocumentBertScoringModel(load_model=load_model,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    
+    chunk_model_path =  './models/chunk_model.bin2'; word_doc_model_path = './models/word_doc_model.bin2'
+    model2 = DocumentBertScoringModel(load_model=load_model,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    
+    chunk_model_path =  './models/chunk_model.bin3'; word_doc_model_path = './models/word_doc_model.bin3'
+    model3 = DocumentBertScoringModel(load_model=load_model,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    
+    train_flag = True  
+    if train_flag:
+        model1.fit((tr_essay1, tr_logical_points))
+        print('-'*20)
+        print('model1 finish')
+        print('-'*20)
+        model2.fit((tr_essay1, tr_novelty_points))
+        print('-'*20)
+        print('model2 finish')
+        print('-'*20)    
+        model3.fit((tr_essay1, tr_persuasive_points))
+        print('-'*20)
+        print('model3 finish')
+        print('-'*20)
         
     model1.predict_for_regress((test_essay1, test_logical_points))
     model2.predict_for_regress((test_essay1, test_novelty_points))
     model3.predict_for_regress((test_essay1, test_persuasive_points))
+
+    # 예제넣고 결과 확인하기
+    # input_sentence = [input()]      # list()와 []는 다르다.
+    sentence = '인공지능은 처음부터 먼 길을 왔으며 오늘날 ChatGPT와 같은 AI 모델은 한때 불가능하다고 생각했던 작업을 수행하는 데 도움이 됩니다. OpenAI에서 개발한 ChatGPT는 인간과 같은 응답 생성, 질문 응답 및 텍스트 완성을 포함하여 광범위한 작업을 수행할 수 있는 언어 모델입니다. 인간 언어를 이해하고 생성하는 능력을 갖춘 ChatGPT는 우리가 기술과 상호 작용하는 방식을 혁신할 수 있는 잠재력을 가지고 있습니다. ChatGPT의 가장 흥미로운 점 중 하나는 광범위한 응용 프로그램에서 사용할 수 있는 잠재력입니다.'
+    input_sentence = [sentence,'']      # list()와 []는 다르다. // 이중 []로 batch 표현
+    
+    mode_ = 'logical'
+    model1.result_point(input_sentence =input_sentence ,mode_=mode_)
+    
+    mode_ = 'novelty'
+    model2.result_point(input_sentence =input_sentence ,mode_=mode_)
+    
+    mode_ = 'persuasive'
+    model3.result_point(input_sentence =input_sentence ,mode_=mode_)

@@ -1,0 +1,7 @@
+경로 : .vscode , asap.ini
+
+배치사이즈, 에폭, 모델 저장한 models 폴더
+
+optimizer : weight_decay = 0.05 -> 0.01
+
+bias : 7 -> 2
