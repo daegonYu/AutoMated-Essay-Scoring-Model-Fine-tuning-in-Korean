@@ -190,8 +190,8 @@ class DocumentBertScoringModel():
 
     def fit(self, data):    # 학습하는 부분 (학습데이터)
         lr = 6e-5
-        # epoch 1/4 해서 실험
-        epochs = 20     # 80
+        # epoch 1/4 해서 실험   epoch 20 실험함
+        epochs = 40     # 80
         weight_decay = 0.001    # 논문 : 0.005
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
