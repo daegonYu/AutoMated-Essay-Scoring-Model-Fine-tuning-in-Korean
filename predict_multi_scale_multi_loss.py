@@ -88,7 +88,7 @@ if __name__ == "__main__":
     # model2 = DocumentBertScoringModel(args=args)
     # model3 = DocumentBertScoringModel(args=args)
     
-    load_model = True        # 평가모드
+    load_model = False        # 모델 불러오기
     
     config = './models/chunk_model.bin1/config.json'    # config는 모두 같다.
     chunk_model_path =  './models/chunk_model.bin1'; word_doc_model_path = './models/word_doc_model.bin1' 

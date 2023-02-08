@@ -2,7 +2,20 @@
 
 배치사이즈, 에폭, 모델 저장한 models 폴더
 
-optimizer : weight_decay = 0.05 -> 0.01
 
-bias : 7 -> 2
-에폭 20 실험했고 이제 40 실험 : 총 60 에폭 => 해당 실험 결과가 models/ 4,5,6   에 저장될 것임.
+models 1,2,3
+에폭 20 실험 
+weight_decay = 0.05
+bias : 7
+loss : a=2;b=1;c=1
+
+models 1,2,3 이어서 실험
+60 에폭 => 해당 실험 결과가 models/ 4,5,6  
+bias : 7
+weight_decay = 0.01 
+loss : a=2;b=1;c=1
+
+models 7,8,9
+bias : 2
+weight_decay = 0.05
+loss : a=1;b=1;c=1

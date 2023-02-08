@@ -85,7 +85,7 @@ class DocumentBertScoringModel():
         print("chunk_sizes_str:%s, bert_batch_size_str:%s" % (chunk_sizes_str, bert_batch_size_str))
         
 
-        # 저장된 파라미터 불러오기 => 
+        # 저장된 파라미터 불러오기 => load_model
         if load_model:
             self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
                 word_doc_model_path,
@@ -191,8 +191,8 @@ class DocumentBertScoringModel():
     def fit(self, data):    # 학습하는 부분 (학습데이터)
         lr = 6e-5
         # epoch 1/4 해서 실험   epoch 20 실험함
-        epochs = 40     # 80
-        weight_decay = 0.001    # 논문 : 0.005
+        epochs = 80     # 80
+        weight_decay = 0.005    # 논문 : 0.005
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
         
@@ -249,9 +249,9 @@ class DocumentBertScoringModel():
                 mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device']))  # 평균되어서 나온다.
                 sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) 
                 mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
-                a=2;b=1;c=1
+                a=1;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
-                print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
+                print('Epoch : {}, iter: {}, Loss : {}'.format(epoch+1, i+1, total_loss.item()))
                 loss_list.append(total_loss.item())
                 
                 total_loss.backward()   # 기울기 계산
@@ -261,6 +261,7 @@ class DocumentBertScoringModel():
                 
                 word_document_optimizer.zero_grad() # 기울기 초기화
                 chunk_optimizer.zero_grad()
+            
                 
             word_document_scheduler.step()  # 학습률 업데이트
             chunk_scheduler.step()
@@ -283,7 +284,7 @@ class DocumentBertScoringModel():
             
         # pretrained 모델 저장하기
         _save = True
-        for i in range(1,11):
+        for i in range(1,100):
             if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
                 continue
             else :
@@ -353,3 +354,8 @@ class DocumentBertScoringModel():
         elif mode_ == 'persuasive':
             print("{} 예측 점수 : {}점".format('설득력',pred_point))
             
+        else:
+            print("{} 예측 점수 : {}점".format('?',pred_point))
+        
+        return pred_point
+    

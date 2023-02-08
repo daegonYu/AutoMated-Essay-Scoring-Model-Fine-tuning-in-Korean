@@ -3,9 +3,14 @@ pearson: 0.687 qwk: 0.641
 pearson: 0.461 	 qwk: 0.262
 pearson: 0.434 	 qwk: 0.21
 pearson: 0.421 	 qwk: 0.346
+
+
+1,2,3
 pearson: 0.504 	 qwk: 0.465
 pearson: 0.492 	 qwk: 0.478
 pearson: 0.587 	 qwk: 0.468
-pearson: 0.504 	 qwk: 0.465
-pearson: 0.492 	 qwk: 0.478
-pearson: 0.587 	 qwk: 0.468
+
+4,5,6
+pearson: 0.456 	 qwk: 0.451
+pearson: 0.423 	 qwk: 0.395
+pearson: 0.459 	 qwk: 0.434
