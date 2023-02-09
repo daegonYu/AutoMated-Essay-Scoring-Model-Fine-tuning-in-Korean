@@ -9,8 +9,24 @@ pearson: 0.421 	 qwk: 0.346
 pearson: 0.504 	 qwk: 0.465
 pearson: 0.492 	 qwk: 0.478
 pearson: 0.587 	 qwk: 0.468
+논리성 예측 점수 : 43.02점
+참신성 예측 점수 : 9.46점
+설득력 예측 점수 : 54.29점
 
 4,5,6
 pearson: 0.456 	 qwk: 0.451
 pearson: 0.423 	 qwk: 0.395
 pearson: 0.459 	 qwk: 0.434
+
+7,8,9
+pearson: nan 	 qwk: 0.0
+pearson: 0.437 	 qwk: 0.426
+pearson: 0.445 	 qwk: 0.411
+
+10,11,12
+pearson: 0.449 	 qwk: 0.447
+pearson: 0.447 	 qwk: 0.425
+pearson: 0.486 	 qwk: 0.448
+논리성 예측 점수 : 48.44점
+참신성 예측 점수 : 19.85점
+설득력 예측 점수 : 49.42점

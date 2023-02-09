@@ -191,7 +191,7 @@ class DocumentBertScoringModel():
     def fit(self, data):    # 학습하는 부분 (학습데이터)
         lr = 6e-5
         # epoch 1/4 해서 실험   epoch 20 실험함
-        epochs = 80     # 80
+        epochs = 20     # 80
         weight_decay = 0.005    # 논문 : 0.005
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
@@ -249,7 +249,7 @@ class DocumentBertScoringModel():
                 mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device']))  # 평균되어서 나온다.
                 sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) 
                 mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
-                a=1;b=1;c=1
+                a=2;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
                 print('Epoch : {}, iter: {}, Loss : {}'.format(epoch+1, i+1, total_loss.item()))
                 loss_list.append(total_loss.item())
