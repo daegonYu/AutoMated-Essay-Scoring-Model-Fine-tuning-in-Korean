@@ -23,3 +23,16 @@ loss : a=1;b=1;c=1
 models 10,11,12 -> models/ 4,5,6 에서 epochs 20 추가 진행
 weight_decay = 0.05
 loss : a=2;b=1;c=1
+
+2/13
+13~
+bigbird 램 용량 부족
+bigbird 사용을 위해 max_input_length 다 4096으로 변경함 (3군데)
++ 모델, 토크나이저 bigbird로 변경
+배치사이즈 1로 변경
+
+2/13
+klue bert로 돌려놈
+
+models 13 : 풍부함 모델 학습
+

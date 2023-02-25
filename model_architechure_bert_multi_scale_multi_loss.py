@@ -49,14 +49,18 @@ def mr_loss_func(pred,label):
     return mr_loss/label.size(0)
 
 class DocumentBertScoringModel():
-    def __init__(self, load_model, chunk_model_path,word_doc_model_path,config, args=None):
+    def __init__(self, load_model, chunk_model_path=None, word_doc_model_path=None, config=None, args=None):
         if args is not None:
             self.args = vars(args)
         # self.bert_tokenizer = BertTokenizer.from_pretrained(self.args['bert_model_path'])       # 토크나이저는 vacob.txt 파일 기준으로
-        # 토크나이저
-        # self.bert_tokenizer = BertTokenizer.from_pretrained('klue/bert-base')
+        
+        # KLUE BERT 토크나이저
         self.bert_tokenizer = AutoTokenizer.from_pretrained("klue/bert-base")   # transformer = 4.7.0 
 
+        # birbird 토크나이저, 램 용량 부족
+        # self.bert_tokenizer = AutoTokenizer.from_pretrained("monologg/kobigbird-bert-base")
+        
+        
         # config설정
         # if os.path.exists(self.args['bert_model_path']):
         #     if os.path.exists(os.path.join(self.args['bert_model_path'], CONFIG_NAME)):
@@ -68,6 +72,7 @@ class DocumentBertScoringModel():
         # else:
         #     config = BertConfig.from_pretrained(self.args['bert_model_path'])
             # config는 제외하자.
+            
         self.config = config
         self.prompt = int(args.prompt[1])
         chunk_sizes_str = self.args['chunk_sizes']
@@ -106,12 +111,22 @@ class DocumentBertScoringModel():
             # => 구체적으로 풀고 싶은 문제에 대해 모델을 학습시켜라(Fine-Tuning), 예측이나 추론이 가능하게
             # from_pretrained()이 인수로는 (pretrained_model_name_or_path, config)가 있는데 pretrained된 모델 선택과 config에 계층에 대한 정보를 넣어줘야 한다.
             # 둘다 pretrain 모델로 bert-base-uncased가 맞는 것 같다. longformer를 사용하면 초기화되는 파라미터들이 너무 많아서 그런지 학습 진행이 안된다.
+            
+            # bigbird
+            # self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
+            #     "monologg/kobigbird-bert-base",
+            # )
+            # self.bert_regression_by_chunk = DocumentBertSentenceChunkAttentionLSTM.from_pretrained(
+            #     "monologg/kobigbird-bert-base")
+            
+            # klue/bert-base
             self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
                 "klue/bert-base",
             )
             self.bert_regression_by_chunk = DocumentBertSentenceChunkAttentionLSTM.from_pretrained(
                 "klue/bert-base"
             )
+            
             # 아래 원본
             # self.bert_regression_by_word_document = DocumentBertCombineWordDocumentLinear.from_pretrained(
             #     self.args['bert_model_path'] + "/word_document",
@@ -125,10 +140,12 @@ class DocumentBertScoringModel():
     def predict_for_regress(self, data):    # data = 한글에세이, 정답
         # test 데이터가 들어가서 eval 결과 확인하기
         correct_output = None
+        # bigbird를 위한 맥스길이 변경
+        max_input_length = 512
         if isinstance(data, tuple) and len(data) == 2:
             # 토크나이징
             document_representations_word_document, document_sequence_lengths_word_document = encode_documents(
-                data[0], self.bert_tokenizer, max_input_length=512)
+                data[0], self.bert_tokenizer, max_input_length=max_input_length)
             document_representations_chunk_list, document_sequence_lengths_chunk_list = [], []
             for i in range(len(self.chunk_sizes)):
                 document_representations_chunk, document_sequence_lengths_chunk = encode_documents(
@@ -188,23 +205,26 @@ class DocumentBertScoringModel():
         
         return float(test_eva_res[7]), float(test_eva_res[8])
 
-    def fit(self, data):    # 학습하는 부분 (학습데이터)
+    def fit(self, data, test=None):    # 학습하는 부분 (학습데이터)
         lr = 6e-5
         # epoch 1/4 해서 실험   epoch 20 실험함
-        epochs = 20     # 80
+        epochs = 80     # 80
         weight_decay = 0.005    # 논문 : 0.005
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
         
-        word_document_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=word_document_optimizer,
-                                        lr_lambda=lambda epoch: 0.95 ** epoch)
-        chunk_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=chunk_optimizer,
-                                        lr_lambda=lambda epoch: 0.95 ** epoch)
+        # lr 스케줄러
+        # word_document_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=word_document_optimizer,
+        #                                 lr_lambda=lambda epoch: 0.95 ** epoch)
+        # chunk_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=chunk_optimizer,
+        #                                 lr_lambda=lambda epoch: 0.95 ** epoch)
         
         correct_output = None
+        # bigbird를 위한 맥스길이 변경
+        max_input_length = 512
         if isinstance(data, tuple) and len(data) == 2:
             document_representations_word_document, document_sequence_lengths_word_document = encode_documents(
-                data[0], self.bert_tokenizer, max_input_length=512)
+                data[0], self.bert_tokenizer, max_input_length=max_input_length)    # max_input_length defalt : 512
             document_representations_chunk_list, document_sequence_lengths_chunk_list = [], []
             for i in range(len(self.chunk_sizes)):
                 document_representations_chunk, document_sequence_lengths_chunk = encode_documents(
@@ -225,7 +245,7 @@ class DocumentBertScoringModel():
         self.bert_regression_by_word_document.train()   # train 모드로 변경
         self.bert_regression_by_chunk.train()
         loss_list = []
-        for epoch in tqdm(range(epochs)):
+        for epoch in tqdm(range(1,epochs+1)):
             for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
                 # 배치마다 device를 통일 시켜줘야 한다.
                 batch_document_tensors_word_document = document_representations_word_document[i:i + self.args['batch_size']].to(device=self.args['device'])
@@ -251,7 +271,7 @@ class DocumentBertScoringModel():
                 mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
                 a=2;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
-                print('Epoch : {}, iter: {}, Loss : {}'.format(epoch+1, i+1, total_loss.item()))
+                print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
                 loss_list.append(total_loss.item())
                 
                 total_loss.backward()   # 기울기 계산
@@ -262,25 +282,28 @@ class DocumentBertScoringModel():
                 word_document_optimizer.zero_grad() # 기울기 초기화
                 chunk_optimizer.zero_grad()
             
+            if epoch % 10 == 0 and test:        # 10에폭마다 test 셋으로 성능 체크
+                print('epoch : {}'.format(epoch))
+                self.predict_for_regress(test)
                 
-            word_document_scheduler.step()  # 학습률 업데이트
-            chunk_scheduler.step()
+
+            # lr 스케줄러
+            # word_document_scheduler.step()  # 학습률 업데이트
+            # chunk_scheduler.step()
         
-        # 모델 저장 nn.Module 사용시로 알고 있다.
-        model_save = False
-        # _PATH = '/home/daegon/Multi-Scale-BERT-AES/models'
-        # if model_save:
-        #     torch.save(self.bert_regression_by_word_document.state_dict(), _PATH+'/word_doc.pt')
-        #     torch.save(self.bert_regression_by_chunk.state_dict(), _PATH+'/chunk.pt')
-        #     print('success the model save')
         
         # 손실그래프 및 손실 값 확인하기
         graph = True
         if graph:
-            plt.plot(range(len(loss_list)),loss_list)
-            plt.show()
+            # plt.plot(range(len(loss_list)),loss_list)
+            # plt.show()
             loss_list = np.array(loss_list)
-            np.save('./loss_eval/loss_1.npy',loss_list)
+            for i in range(1,100):
+                if os.path.exists('./loss_eval/klue_loss{}.npy'.format(i)):
+                    continue
+                else :
+                    np.save('./loss_eval/klue_loss{}.npy',loss_list)
+                    break
             
         # pretrained 모델 저장하기
         _save = True
@@ -293,10 +316,10 @@ class DocumentBertScoringModel():
                 break
      
     def result_point(self, input_sentence, mode_):    # 예제 넣어보기
-        # correct_output = None
-        # 토크나이징
+        # bigbird를 위한 맥스길이 변경
+        max_input_length = 512
         document_representations_word_document, document_sequence_lengths_word_document = encode_documents(
-            input_sentence, self.bert_tokenizer, max_input_length=512)
+            input_sentence, self.bert_tokenizer, max_input_length=max_input_length)
         
         document_representations_chunk_list, document_sequence_lengths_chunk_list = [], []
         
