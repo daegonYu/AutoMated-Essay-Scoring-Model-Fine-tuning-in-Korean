@@ -34,5 +34,5 @@ bigbird 사용을 위해 max_input_length 다 4096으로 변경함 (3군데)
 2/13
 klue bert로 돌려놈
 
-models 13 : 풍부함 모델 학습
+models 13~ : 풍부함 모델 학습
 

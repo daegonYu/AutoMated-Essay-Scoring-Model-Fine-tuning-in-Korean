@@ -153,6 +153,7 @@ if __name__ == "__main__":
     sentence = '전통은 지키고 악습은 끊어야 한다고 생각합니다.'
     input_sentence = [sentence,'']      # list()와 []는 다르다. // 이중 []로 batch 표현
     
+    # 데이터 셋 넣고 표본 수집하기
     # hub_essays = pd.read_csv('./datatouch/korproject/AIHUB_대안제시_주장.csv', index_col=0)
     # sentences = hub_essays.essay_txt.to_list()
     

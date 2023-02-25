@@ -284,7 +284,19 @@ class DocumentBertScoringModel():
             
             if epoch % 10 == 0 and test:        # 10에폭마다 test 셋으로 성능 체크
                 print('epoch : {}'.format(epoch))
-                self.predict_for_regress(test)
+                self.predict_for_regress(test)      # eval 모드로 변경됨
+                
+                self.bert_regression_by_word_document.train()   # 다시 train 모드로 변경해줘야 함
+                self.bert_regression_by_chunk.train()
+                
+                for i in range(1,100):      # 모델 저장
+                    if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
+                        continue
+                    else :
+                        self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
+                        self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
+                        break
+                
                 
 
             # lr 스케줄러
