@@ -5,7 +5,7 @@
 
 모델 구조 
 git : https://github.com/lingochamp/multi-scale-bert-aes
-논문에서 올려논 모델은 data 폴더에 있음
+
 
 이 모델 구조를 활용하여
 KoBERT나 KLUE BERT 등의 사전 학습 모델을 불러와서
