@@ -31,6 +31,17 @@ pearson: 0.486 	 qwk: 0.448
 참신성 예측 점수 : 19.85점
 설득력 예측 점수 : 49.42점
 
-13
+13 ~ 21 (한번 맞는지 확인해볼 필요가 있다.)
 
-pearson: 0.48 	 qwk: 0.43
+pearson: 0.48 	 qwk: 0.43 13 x
+pearson: nan 	 qwk: 0.0 14 13
+pearson: 0.497 	 qwk: 0.34 15 14
+pearson: 0.543 	 qwk: 0.422 16 15
+pearson: 0.507 	 qwk: 0.451 17 16
+pearson: 0.536 	 qwk: 0.52 18 17
+pearson: 0.585 	 qwk: 0.583 19 18      # best
+pearson: 0.53 	 qwk: 0.493 20 19
+pearson: 0.565 	 qwk: 0.461 21 20
+
+22
+--논리성--

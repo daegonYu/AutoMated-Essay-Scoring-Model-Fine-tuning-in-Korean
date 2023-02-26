@@ -271,7 +271,8 @@ class DocumentBertScoringModel():
                 mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
                 a=2;b=1;c=1
                 total_loss = a*mse_loss + b*sim_loss + c*mr_loss
-                print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
+                # 손실 값 프린트 
+                # print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
                 loss_list.append(total_loss.item())
                 
                 total_loss.backward()   # 기울기 계산
@@ -390,7 +391,7 @@ class DocumentBertScoringModel():
             print("{} 예측 점수 : {}점".format('설득력',pred_point))
             
         else:
-            print("{} 예측 점수 : {}점".format('?',pred_point))
+            print("{} 예측 점수 : {}점".format('근거의 풍부함',pred_point))
         
         return pred_point
     
