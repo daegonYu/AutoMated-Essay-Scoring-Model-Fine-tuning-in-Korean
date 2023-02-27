@@ -45,3 +45,32 @@ pearson: 0.565 	 qwk: 0.461 21 20
 
 22
 --논리성--
+
+pearson: 0.516 	 qwk: 0.394
+pearson: 0.526 	 qwk: 0.427
+pearson: 0.529 	 qwk: 0.431     # best
+pearson: 0.459 	 qwk: 0.363
+pearson: 0.383 	 qwk: 0.257
+pearson: 0.413 	 qwk: 0.321
+pearson: 0.321 	 qwk: 0.221
+pearson: 0.428 	 qwk: 0.386
+--참신성--
+
+pearson: 0.477 	 qwk: 0.3
+pearson: 0.376 	 qwk: 0.343
+pearson: 0.436 	 qwk: 0.405
+pearson: 0.422 	 qwk: 0.417
+pearson: 0.414 	 qwk: 0.39
+pearson: 0.424 	 qwk: 0.413
+pearson: 0.389 	 qwk: 0.385
+pearson: 0.445 	 qwk: 0.421     # best
+--설득력--
+
+pearson: 0.53 	 qwk: 0.355
+pearson: 0.485 	 qwk: 0.328
+pearson: 0.483 	 qwk: 0.337
+pearson: 0.462 	 qwk: 0.375
+pearson: 0.516 	 qwk: 0.466     # best
+pearson: 0.485 	 qwk: 0.471
+pearson: 0.502 	 qwk: 0.447
+pearson: 0.454 	 qwk: 0.417

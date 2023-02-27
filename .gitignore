@@ -1,4 +1,5 @@
 *.bin
 *.pt
+*.json
 __pycache__/*
 .vscode/

@@ -122,7 +122,7 @@ if __name__ == "__main__":
     train_flag = True
     if train_flag:      # data는 튜플 형태, 길이: 2
         f = open('./loss_eval/eval.txt','a')
-        f.write("\n--논리성--\n")
+        f.write("\n\n--논리성--\n")
         f.close()
         data = (tr_essay, tr_logical_points)
         test = (test_essay, test_logical_points)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         print('-'*20)
         
         f = open('./loss_eval/eval.txt','a')
-        f.write("\n--참신성--\n")
+        f.write("\n\n--참신성--\n")
         f.close()
         data = (tr_essay, tr_novelty_points)
         test = (test_essay, test_novelty_points)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
         print('-'*20)
         
         f = open('./loss_eval/eval.txt','a')
-        f.write("\n--설득력--\n")
+        f.write("\n\n--설득력--\n")
         f.close()
         data = (tr_essay, tr_persuasive_points)
         test = (test_essay, test_persuasive_points)    
@@ -152,7 +152,7 @@ if __name__ == "__main__":
         print('-'*20)
         
         # f = open('./loss_eval/eval.txt','a')
-        # f.write("\n--근거의 풍부함--\n")
+        # f.write("\n\n--근거의 풍부함--\n")
         # f.close()
         # data = (tr_essay, tr_reason_points)
         # test = (test_essay, test_reason_points)
