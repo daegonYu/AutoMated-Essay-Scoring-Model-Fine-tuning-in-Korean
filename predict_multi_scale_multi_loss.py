@@ -104,16 +104,16 @@ if __name__ == "__main__":
    
     
     # model 1 : 논리성 / 2: 풍부한 근거 / 3: 설득력 / 4: 참신성
-    chunk_model_path =  './models/chunk_model.bin24'; word_doc_model_path = './models/word_doc_model.bin24' 
-    model1 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    # chunk_model_path =  './models/chunk_model.bin24'; word_doc_model_path = './models/word_doc_model.bin24' 
+    # model1 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
     
-    chunk_model_path =  './models/chunk_model.bin18'; word_doc_model_path = './models/word_doc_model.bin18'
-    model2 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    # chunk_model_path =  './models/chunk_model.bin18'; word_doc_model_path = './models/word_doc_model.bin18'
+    # model2 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
     
-    chunk_model_path =  './models/chunk_model.bin44'; word_doc_model_path = './models/word_doc_model.bin44'
-    model3 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    # chunk_model_path =  './models/chunk_model.bin44'; word_doc_model_path = './models/word_doc_model.bin44'
+    # model3 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
     
-    chunk_model_path =  './models/chunk_model.bin38'; word_doc_model_path = './models/word_doc_model.bin38'
+    chunk_model_path =  './models/chunk_model.bin49'; word_doc_model_path = './models/word_doc_model.bin49'
     model4 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
     
     
@@ -126,35 +126,35 @@ if __name__ == "__main__":
     
     train_flag = False
     if train_flag:      # data는 튜플 형태, 길이: 2
-        f = open('./loss_eval/eval.txt','a')
-        f.write("\n\n--논리성--\n")
-        f.close()
-        data = (tr_essay, tr_logical_points)
-        test = (test_essay, test_logical_points)
-        model1.fit(data, test)
-        print('-'*20)
-        print('model1 finish')
-        print('-'*20)
+        # f = open('./loss_eval/eval.txt','a')
+        # f.write("\n\n--논리성--\n")
+        # f.close()
+        # data = (tr_essay, tr_logical_points)
+        # test = (test_essay, test_logical_points)
+        # model1.fit(data, test)
+        # print('-'*20)
+        # print('model1 finish')
+        # print('-'*20)
         
-        f = open('./loss_eval/eval.txt','a')
-        f.write("\n\n--근거의 풍부함--\n")
-        f.close()
-        data = (tr_essay, tr_reason_points)
-        test = (test_essay, test_reason_points)
-        model2.fit(data, test)
-        print('-'*20)
-        print('model2 finish')
-        print('-'*20)
+        # f = open('./loss_eval/eval.txt','a')
+        # f.write("\n\n--근거의 풍부함--\n")
+        # f.close()
+        # data = (tr_essay, tr_reason_points)
+        # test = (test_essay, test_reason_points)
+        # model2.fit(data, test)
+        # print('-'*20)
+        # print('model2 finish')
+        # print('-'*20)
         
-        f = open('./loss_eval/eval.txt','a')
-        f.write("\n\n--설득력--\n")
-        f.close()
-        data = (tr_essay, tr_persuasive_points)
-        test = (test_essay, test_persuasive_points)    
-        model3.fit(data, test)
-        print('-'*20)
-        print('model3 finish')
-        print('-'*20)
+        # f = open('./loss_eval/eval.txt','a')
+        # f.write("\n\n--설득력--\n")
+        # f.close()
+        # data = (tr_essay, tr_persuasive_points)
+        # test = (test_essay, test_persuasive_points)    
+        # model3.fit(data, test)
+        # print('-'*20)
+        # print('model3 finish')
+        # print('-'*20)
         
         f = open('./loss_eval/eval.txt','a')
         f.write("\n\n--참신성--\n")
@@ -167,9 +167,9 @@ if __name__ == "__main__":
         print('-'*20)
     
     # pearson, qwk 
-    model1.predict_for_regress((test_essay, test_logical_points))
-    model2.predict_for_regress((test_essay, test_reason_points))
-    model3.predict_for_regress((test_essay, test_persuasive_points))
+    # model1.predict_for_regress((test_essay, test_logical_points))
+    # model2.predict_for_regress((test_essay, test_reason_points))
+    # model3.predict_for_regress((test_essay, test_persuasive_points))
     model4.predict_for_regress((test_essay, test_novelty_points))
 
     # 예제넣고 결과 확인하기
