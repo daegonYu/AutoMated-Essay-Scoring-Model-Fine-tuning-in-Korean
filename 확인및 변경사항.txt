@@ -36,3 +36,7 @@ klue bert로 돌려놈
 
 models 13~ : 풍부함 모델 학습
 
+
+고려사항
+1. 5 fold validation
+2. kor_bigbird : transformers.BigBirdConfig(max_position_embeddings=1024)
