@@ -72,8 +72,8 @@ pearson: 0.454 	 qwk: 0.417
 
 --best--
 
-pearson: 0.529 	 qwk: 0.431 24
-pearson: 0.585 	 qwk: 0.583 18
-pearson: 0.516 	 qwk: 0.466 44
-pearson: 0.459 	 qwk: 0.431 49 
+pearson: 0.529 	 qwk: 0.431 # 24 논리성
+pearson: 0.585 	 qwk: 0.583 # 18 풍부한 근거
+pearson: 0.516 	 qwk: 0.466 # 44 설득력
+pearson: 0.459 	 qwk: 0.431 # 49 참신성 
 

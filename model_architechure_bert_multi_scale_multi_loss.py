@@ -52,14 +52,16 @@ class DocumentBertScoringModel():
     def __init__(self, load_model, chunk_model_path=None, word_doc_model_path=None, config=None, args=None):
         if args is not None:
             self.args = vars(args)
+            
+        # kobigbird 모델 이용하기
+        # self.bert_tokenizer = AutoTokenizer.from_pretrained("monologg/kobigbird-bert-base")     # transformer >= 4.11.0
+        
+            
         # self.bert_tokenizer = BertTokenizer.from_pretrained(self.args['bert_model_path'])       # 토크나이저는 vacob.txt 파일 기준으로
         
         # KLUE BERT 토크나이저
         self.bert_tokenizer = AutoTokenizer.from_pretrained("klue/bert-base")   # transformer = 4.7.0 
 
-        # birbird 토크나이저, 램 용량 부족
-        # self.bert_tokenizer = AutoTokenizer.from_pretrained("monologg/kobigbird-bert-base")
-        
         
         # config설정
         # if os.path.exists(self.args['bert_model_path']):
