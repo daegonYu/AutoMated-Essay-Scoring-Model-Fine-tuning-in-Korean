@@ -4,6 +4,9 @@ from torch.nn import LSTM
 from transformers import BertPreTrainedModel, BertConfig, BertModel
 import torch.nn.functional as F
 
+# from transformers import BigBirdModel, BigBirdTokenizer
+
+
 
 def init_weights(m):
     if isinstance(m, nn.Linear):
@@ -55,6 +58,10 @@ class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  # 원본    
 class DocumentBertCombineWordDocumentLinear(BertPreTrainedModel): 
     def __init__(self, bert_model_config: BertConfig):
         super(DocumentBertCombineWordDocumentLinear, self).__init__(bert_model_config)
+        # BigBird
+        # self.bert = BigBirdModel.from_pretrained("monologg/kobigbird-bert-base")
+        # self.bert.config.max_position_embeddings = 1024
+        
         self.bert = BertModel(bert_model_config)
         self.bert_batch_size = 1
         self.dropout = nn.Dropout(p=bert_model_config.hidden_dropout_prob)

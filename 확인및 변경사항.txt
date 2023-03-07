@@ -39,9 +39,10 @@ models 13~ : 풍부함 모델 학습
 
 고려사항
 1. 5 fold validation
-2. kobigbird : transformers.BigBirdConfig(max_position_embeddings=1024)
+2. kobigbird : transformers.BigBirdConfig(max_position_embeddings=1024) -> 브랜치 나누기 아니면 코드에 KLUE_BERT인지 BigBird인지 나눠서 돌아가게끔 하면 되는데 건들게 많다. -> 브랜치 나누자.
 3. 엑셀 방사형 차트 그리기
 4. 로스 함수 계수 변경해보며 성능평가하기
+5. AdamW로 바꿔보기 -> RAdam으로 바꿔보기
 
 3/7
 kobigbird로 코드 바꿈 // transformer >= 4.11.0 권장

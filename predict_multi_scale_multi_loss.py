@@ -68,42 +68,34 @@ if __name__ == "__main__":
 
     print("sample number:", len(essays))
     print("label number:", len(essay_points))
-
-    # 기존 모델 불러오는 코드
-    # model1 = DocumentBertScoringModel(args=args)
-    # model2 = DocumentBertScoringModel(args=args)
-    # model3 = DocumentBertScoringModel(args=args)
-    
-    
-    # 모델 불러오기
-    # load_model = True        
+     
     
     config = './models/chunk_model.bin1/config.json'    # config는 모두 같다.
    
     
     # model 1 : 논리성 / 2: 풍부한 근거 / 3: 설득력 / 4: 참신성
-    # chunk_model_path =  './models/chunk_model.bin24'; word_doc_model_path = './models/word_doc_model.bin24' 
+    # chunk_model_path =  './models/chunk_model.bin4'; word_doc_model_path = './models/word_doc_model.bin4' 
     # model1 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
     
-    chunk_model_path =  './models/chunk_model.bin18'; word_doc_model_path = './models/word_doc_model.bin18'
-    model2 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    # chunk_model_path =  './models/chunk_model.bin18'; word_doc_model_path = './models/word_doc_model.bin18'
+    # model2 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
     
-    chunk_model_path =  './models/chunk_model.bin44'; word_doc_model_path = './models/word_doc_model.bin44'
-    model3 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    # chunk_model_path =  './models/chunk_model.bin5'; word_doc_model_path = './models/word_doc_model.bin5'
+    # model3 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
     
-    chunk_model_path =  './models/chunk_model.bin49'; word_doc_model_path = './models/word_doc_model.bin49'
-    model4 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
+    # chunk_model_path =  './models/chunk_model.bin6'; word_doc_model_path = './models/word_doc_model.bin6'
+    # model4 = DocumentBertScoringModel(load_model=True,chunk_model_path=chunk_model_path,word_doc_model_path=word_doc_model_path,config=config,args=args)
     
     
     # 새로 학습 시키기
     # model1 = DocumentBertScoringModel(load_model=False,args=args)
-    # model2 = DocumentBertScoringModel(load_model=False,args=args)
+    model2 = DocumentBertScoringModel(load_model=False,args=args)
     # model3 = DocumentBertScoringModel(load_model=False,args=args)
     # model4 = DocumentBertScoringModel(load_model=False,args=args)
     
     
-    train_flag = False
-    # if train_flag:      # data는 튜플 형태, 길이: 2
+    train_flag = True
+    if train_flag:      # data는 튜플 형태, 길이: 2
         # f = open('./loss_eval/eval.txt','a')
         # f.write("\n\n--논리성--\n")
         # f.close()
@@ -114,15 +106,15 @@ if __name__ == "__main__":
         # print('model1 finish')
         # print('-'*20)
         
-        # f = open('./loss_eval/eval.txt','a')
-        # f.write("\n\n--근거의 풍부함--\n")
-        # f.close()
-        # data = (tr_essay, tr_reason_points)
-        # test = (test_essay, test_reason_points)
-        # model2.fit(data, test)
-        # print('-'*20)
-        # print('model2 finish')
-        # print('-'*20)
+        f = open('./loss_eval/eval.txt','a')
+        f.write("\n\n--근거의 풍부함--\n")
+        f.close()
+        data = (tr_essay, tr_reason_points)
+        test = (test_essay, test_reason_points)
+        model2.fit(data, test)
+        print('-'*20)
+        print('model2 finish')
+        print('-'*20)
         
         # f = open('./loss_eval/eval.txt','a')
         # f.write("\n\n--설득력--\n")
@@ -157,36 +149,36 @@ if __name__ == "__main__":
     input_sentence = [sentence,'']      # list()와 []는 다르다. // 이중 []로 batch 표현
     
     # 데이터 셋 넣고 표본 수집하기
-    Datasampling = True
-    if Datasampling:
-        hub_essays = pd.read_csv('./datatouch/korproject/전처리_AIHUB_대안제시_주장.csv', index_col=0,  lineterminator='\n')
-        sentences = hub_essays.essay_txt.to_list()
+    # Datasampling = True
+    # if Datasampling:
+    #     hub_essays = pd.read_csv('./datatouch/korproject/전처리_AIHUB_대안제시_주장.csv', index_col=0,  lineterminator='\n')
+    #     sentences = hub_essays.essay_txt.to_list()
         
-        logical_point_list = np.array([])
-        novelty_point_list = np.array([])
-        persuasive_point_list = np.array([])
-        reason_point_list = np.array([])
+    #     logical_point_list = np.array([])
+    #     novelty_point_list = np.array([])
+    #     persuasive_point_list = np.array([])
+    #     reason_point_list = np.array([])
         
-        for sentence in tqdm(sentences):
-            input_sentence =  [sentence,'']
+    #     for sentence in tqdm(sentences):
+    #         input_sentence =  [sentence,'']
             
-            # mode_ = 'logical'
-            # lp_ = model1.result_point(input_sentence =input_sentence ,mode_=mode_)  # 리턴 값은 float() 형, 범위 : 0~ 100
-            # logical_point_list = np.append(logical_point_list, lp_)
+    #         # mode_ = 'logical'
+    #         # lp_ = model1.result_point(input_sentence =input_sentence ,mode_=mode_)  # 리턴 값은 float() 형, 범위 : 0~ 100
+    #         # logical_point_list = np.append(logical_point_list, lp_)
             
-            mode_ = 'reason'
-            rp_ = model2.result_point(input_sentence =input_sentence ,mode_=mode_)
-            reason_point_list = np.append(reason_point_list, rp_)
+    #         mode_ = 'reason'
+    #         rp_ = model2.result_point(input_sentence =input_sentence ,mode_=mode_)
+    #         reason_point_list = np.append(reason_point_list, rp_)
             
-            mode_ = 'persuasive'
-            pp_ = model3.result_point(input_sentence =input_sentence ,mode_=mode_)
-            persuasive_point_list = np.append(persuasive_point_list, pp_)
+    #         mode_ = 'persuasive'
+    #         pp_ = model3.result_point(input_sentence =input_sentence ,mode_=mode_)
+    #         persuasive_point_list = np.append(persuasive_point_list, pp_)
             
-            mode_ = 'novelty'
-            np_ = model4.result_point(input_sentence =input_sentence ,mode_=mode_)
-            novelty_point_list = np.append(novelty_point_list, np_)
+    #         mode_ = 'novelty'
+    #         np_ = model4.result_point(input_sentence =input_sentence ,mode_=mode_)
+    #         novelty_point_list = np.append(novelty_point_list, np_)
         
-        # np.save('./loss_eval/essay_point/logical',logical_point_list)
-        np.save('./loss_eval/essay_point/novelty',novelty_point_list)
-        np.save('./loss_eval/essay_point/persuasive',persuasive_point_list)
-        np.save('./loss_eval/essay_point/reason',reason_point_list)
+    #     np.save('./loss_eval/essay_point/logical',logical_point_list)
+    #     np.save('./loss_eval/essay_point/novelty',novelty_point_list)
+    #     np.save('./loss_eval/essay_point/persuasive',persuasive_point_list)
+    #     np.save('./loss_eval/essay_point/reason',reason_point_list)

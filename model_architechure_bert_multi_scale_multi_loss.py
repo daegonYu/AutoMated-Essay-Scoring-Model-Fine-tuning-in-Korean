@@ -205,13 +205,19 @@ class DocumentBertScoringModel():
         f.write("\npearson: {} \t qwk: {}".format(float(test_eva_res[7]),float(test_eva_res[8])))
         f.close()
         
-        return float(test_eva_res[7]), float(test_eva_res[8])
+        return float(test_eva_res[7]), float(test_eva_res[8])       # pearson, qwk 리턴
 
     def fit(self, data, test=None):    # 학습하는 부분 (학습데이터)
         lr = 6e-5
         # epoch 1/4 해서 실험   epoch 20 실험함
-        epochs = 40     # 80
+        epochs = 80     # 80
         weight_decay = 0.005    # 논문 : 0.005
+        
+        # 옵티마이져 : AdamW
+        # word_document_optimizer = torch.optim.AdamW(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
+        # chunk_optimizer = torch.optim.AdamW(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
+        
+        # 논문 Adam
         word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
         chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
         
@@ -246,7 +252,9 @@ class DocumentBertScoringModel():
         
         self.bert_regression_by_word_document.train()   # train 모드로 변경
         self.bert_regression_by_chunk.train()
-        loss_list = []
+        
+        loss_list = []; pearson = 0; qwk = 0
+        
         for epoch in tqdm(range(1,epochs+1)):
             for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
                 # 배치마다 device를 통일 시켜줘야 한다.
@@ -279,28 +287,39 @@ class DocumentBertScoringModel():
                 
                 total_loss.backward()   # 기울기 계산
                 
+                # 기울기 클리핑 : 기울기가 임계값보다 크다면 임계값 이하로 제한 
+                # 기울기 갱신하기 전에 실행되어야 한다. 즉, optimizer.step() 전에 코드 추가
+                torch.nn.utils.clip_grad_norm_(self.bert_regression_by_word_document.parameters(), max_norm=1.0)
+                torch.nn.utils.clip_grad_norm_(self.bert_regression_by_chunk.parameters(), max_norm=1.0)
+                
                 word_document_optimizer.step()  # 파라미터 갱신
                 chunk_optimizer.step()
                 
                 word_document_optimizer.zero_grad() # 기울기 초기화
                 chunk_optimizer.zero_grad()
             
-            if epoch % 10 == 0 and test:        # 10에폭마다 test 셋으로 성능 체크
+            if epoch % 10 == 0 and test:        # 10 에폭마다 test 셋으로 성능 체크
                 print('epoch : {}'.format(epoch))
-                self.predict_for_regress(test)      # eval 모드로 변경됨
+                new_pearson, new_qwk = self.predict_for_regress(test)      # eval 모드로 변경됨
                 
                 self.bert_regression_by_word_document.train()   # 다시 train 모드로 변경해줘야 함
                 self.bert_regression_by_chunk.train()
                 
-                for i in range(1,100):      # 모델 저장
-                    if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
-                        continue
-                    else :
-                        self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
-                        self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
-                        break
-                
-                
+                if new_pearson > pearson or new_qwk > qwk:      # 더 큰 것만 저장
+                    pearson = new_pearson
+                    qwk = new_qwk
+                    for i in range(1,100):      # 모델 저장
+                        if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
+                            continue
+                        else :
+                            self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
+                            self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
+                            
+                            print('{}번째 모델, Epoch:{}, pearson:{}, qwk:{}'.format(i, epoch, pearson, qwk))
+                            f = open('./loss_eval/eval.txt','a')
+                            f.write('\n%d번째 모델, Epoch:%d, pearson:%f, qwk:%f' % (i, epoch, pearson, qwk))
+                            f.close()
+                            break
 
             # lr 스케줄러
             # word_document_scheduler.step()  # 학습률 업데이트
@@ -320,8 +339,8 @@ class DocumentBertScoringModel():
                     np.save('./loss_eval/klue_loss{}.npy',loss_list)
                     break
             
-        # pretrained 모델 저장하기
-        _save = True
+        # 모든 에폭으로 학습을 마친 pretrained 모델 저장하기
+        _save = False
         for i in range(1,100):
             if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
                 continue
