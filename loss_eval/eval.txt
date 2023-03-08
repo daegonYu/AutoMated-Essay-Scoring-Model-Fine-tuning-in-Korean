@@ -77,17 +77,24 @@ pearson: 0.585 	 qwk: 0.583 # 18 풍부한 근거 -> 실수로 삭제 다시 학
 pearson: 0.516 	 qwk: 0.466 # 44 설득력 -> 5
 pearson: 0.459 	 qwk: 0.431 # 49 참신성  -> 6
 
+
+
 ---클리핑 추가해서 풍부한 근거만 다시 학습하기--
 
-
-
 --근거의 풍부함--
 
+pearson: 0.61 	 qwk: 0.5
+7번째 모델, Epoch:10, pearson:0.610000, qwk:0.500000
+pearson: 0.593 	 qwk: 0.479
+pearson: 0.576 	 qwk: 0.463
+pearson: 0.555 	 qwk: 0.488
+pearson: 0.556 	 qwk: 0.508
+8번째 모델, Epoch:50, pearson:0.556000, qwk:0.508000
+pearson: 0.432 	 qwk: 0.333
+pearson: 0.481 	 qwk: 0.448
+pearson: 0.439 	 qwk: 0.333
 
---근거의 풍부함--
-
-
---근거의 풍부함--
+--기울기 클리핑 삭제, Adam -> AdamW로 변경-- 
 
 
 --근거의 풍부함--

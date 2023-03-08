@@ -112,6 +112,9 @@ if __name__ == "__main__":
         data = (tr_essay, tr_reason_points)
         test = (test_essay, test_reason_points)
         model2.fit(data, test)
+        
+        model2.fit2(data,test)
+        
         print('-'*20)
         print('model2 finish')
         print('-'*20)

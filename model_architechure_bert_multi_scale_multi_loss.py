@@ -201,9 +201,9 @@ class DocumentBertScoringModel():
         print("qwk:", float(test_eva_res[8]))
         
         # txt 파일에 이어쓰기
-        f = open('./loss_eval/eval.txt','a')
-        f.write("\npearson: {} \t qwk: {}".format(float(test_eva_res[7]),float(test_eva_res[8])))
-        f.close()
+        # f = open('./loss_eval/eval.txt','a')
+        # f.write("\npearson: {} \t qwk: {}".format(float(test_eva_res[7]),float(test_eva_res[8])))
+        # f.close()
         
         return float(test_eva_res[7]), float(test_eva_res[8])       # pearson, qwk 리턴
 
@@ -214,12 +214,12 @@ class DocumentBertScoringModel():
         weight_decay = 0.005    # 논문 : 0.005
         
         # 옵티마이져 : AdamW
-        # word_document_optimizer = torch.optim.AdamW(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
-        # chunk_optimizer = torch.optim.AdamW(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
+        word_document_optimizer = torch.optim.AdamW(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
+        chunk_optimizer = torch.optim.AdamW(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
         
         # 논문 Adam
-        word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
-        chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
+        # word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
+        # chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
         
         # lr 스케줄러
         # word_document_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=word_document_optimizer,
@@ -254,7 +254,7 @@ class DocumentBertScoringModel():
         self.bert_regression_by_chunk.train()
         
         loss_list = []; pearson = 0; qwk = 0
-        
+        pearson_list = []; qwk_list = []
         for epoch in tqdm(range(1,epochs+1)):
             for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
                 # 배치마다 device를 통일 시켜줘야 한다.
@@ -289,8 +289,8 @@ class DocumentBertScoringModel():
                 
                 # 기울기 클리핑 : 기울기가 임계값보다 크다면 임계값 이하로 제한 
                 # 기울기 갱신하기 전에 실행되어야 한다. 즉, optimizer.step() 전에 코드 추가
-                torch.nn.utils.clip_grad_norm_(self.bert_regression_by_word_document.parameters(), max_norm=1.0)
-                torch.nn.utils.clip_grad_norm_(self.bert_regression_by_chunk.parameters(), max_norm=1.0)
+                # torch.nn.utils.clip_grad_norm_(self.bert_regression_by_word_document.parameters(), max_norm=1.0)
+                # torch.nn.utils.clip_grad_norm_(self.bert_regression_by_chunk.parameters(), max_norm=1.0)
                 
                 word_document_optimizer.step()  # 파라미터 갱신
                 chunk_optimizer.step()
@@ -298,10 +298,15 @@ class DocumentBertScoringModel():
                 word_document_optimizer.zero_grad() # 기울기 초기화
                 chunk_optimizer.zero_grad()
             
-            if epoch % 10 == 0 and test:        # 10 에폭마다 test 셋으로 성능 체크
+            if epoch % 2 == 0 and test:        # 2 에폭마다 test 셋으로 성능 체크
                 print('epoch : {}'.format(epoch))
-                new_pearson, new_qwk = self.predict_for_regress(test)      # eval 모드로 변경됨
+                new_pearson, new_qwk = self.predict_for_regress(test)      # 여기서 txt쓰기 삭제, eval 모드로 변경됨
+                pearson_list.append(new_pearson); qwk_list.append(new_qwk)
                 
+                f = open('./loss_eval/eval.txt','a')
+                f.write('\nEpoch:%d, pearson:%.3f, qwk:%.3f' % (epoch, pearson, qwk))
+                f.close()
+                            
                 self.bert_regression_by_word_document.train()   # 다시 train 모드로 변경해줘야 함
                 self.bert_regression_by_chunk.train()
                 
@@ -325,6 +330,11 @@ class DocumentBertScoringModel():
             # word_document_scheduler.step()  # 학습률 업데이트
             # chunk_scheduler.step()
         
+        # pearson_list와 qwk_list 저장
+        pearson_list = np.array(pearson_list)
+        qwk_list = np.array(qwk_list)
+        np.save('./loss_eval/adamw_pearson_list.npy',pearson_list)
+        np.save('./loss_eval/adamw_qwk_list.npy',qwk_list)
         
         # 손실그래프 및 손실 값 확인하기
         graph = True
@@ -341,13 +351,174 @@ class DocumentBertScoringModel():
             
         # 모든 에폭으로 학습을 마친 pretrained 모델 저장하기
         _save = False
-        for i in range(1,100):
-            if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
-                continue
-            else :
-                self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
-                self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
-                break
+        if _save:
+            for i in range(1,100):
+                if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
+                    continue
+                else :
+                    self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
+                    self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
+                    break
+                
+    def fit2(self, data, test=None):    # 옵티마이져 Adam + 스케줄러
+        f = open('./loss_eval/eval.txt','a')
+        f.write('fit2: Adam + lr 스케줄러 추가, 기울기 클리핑 삭제')
+        f.close()
+                
+        lr = 6e-5
+        # epoch 1/4 해서 실험   epoch 20 실험함
+        epochs = 80     # 80
+        weight_decay = 0.005    # 논문 : 0.005
+        
+        # 옵티마이져 : RAdam
+        # word_document_optimizer = torch.optim.RAdam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
+        # chunk_optimizer = torch.optim.RAdam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
+        
+        # 논문 Adam
+        word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
+        chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
+        
+        # lr 스케줄러
+        word_document_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=word_document_optimizer,
+                                        lr_lambda=lambda epoch: 0.95 ** epoch)
+        chunk_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=chunk_optimizer,
+                                        lr_lambda=lambda epoch: 0.95 ** epoch)
+        
+        correct_output = None
+        # bigbird를 위한 맥스길이 변경
+        max_input_length = 512
+        if isinstance(data, tuple) and len(data) == 2:
+            document_representations_word_document, document_sequence_lengths_word_document = encode_documents(
+                data[0], self.bert_tokenizer, max_input_length=max_input_length)    # max_input_length defalt : 512
+            document_representations_chunk_list, document_sequence_lengths_chunk_list = [], []
+            for i in range(len(self.chunk_sizes)):
+                document_representations_chunk, document_sequence_lengths_chunk = encode_documents(
+                    data[0],
+                    self.bert_tokenizer,
+                    max_input_length=self.chunk_sizes[i])
+                document_representations_chunk_list.append(document_representations_chunk)
+                document_sequence_lengths_chunk_list.append(document_sequence_lengths_chunk)
+            correct_output = torch.FloatTensor(data[1])     # data[1]에는 정답이 들어있다.
+
+        # 모델 device에 통일
+        self.bert_regression_by_word_document.to(device=self.args['device'])
+        self.bert_regression_by_chunk.to(device=self.args['device'])
+        
+        self.bert_regression_by_word_document.zero_grad()   # model gradient 초기화
+        self.bert_regression_by_chunk.zero_grad()
+        
+        self.bert_regression_by_word_document.train()   # train 모드로 변경
+        self.bert_regression_by_chunk.train()
+        
+        loss_list = []; pearson = 0; qwk = 0
+        pearson_list = []; qwk_list = []
+        for epoch in tqdm(range(1,epochs+1)):
+            for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
+                # 배치마다 device를 통일 시켜줘야 한다.
+                batch_document_tensors_word_document = document_representations_word_document[i:i + self.args['batch_size']].to(device=self.args['device'])
+                batch_predictions_word_document = self.bert_regression_by_word_document(batch_document_tensors_word_document, device=self.args['device'])
+                batch_predictions_word_document = torch.squeeze(batch_predictions_word_document)
+
+                batch_predictions_word_chunk_sentence_doc = batch_predictions_word_document
+                for chunk_index in range(len(self.chunk_sizes)):
+                    batch_document_tensors_chunk = document_representations_chunk_list[chunk_index][i:i + self.args['batch_size']].to(
+                        device=self.args['device'])
+                    batch_predictions_chunk = self.bert_regression_by_chunk(
+                        batch_document_tensors_chunk,
+                        device=self.args['device'],
+                        bert_batch_size=self.bert_batch_sizes[chunk_index]
+                    )
+                    batch_predictions_chunk = torch.squeeze(batch_predictions_chunk)
+                    batch_predictions_word_chunk_sentence_doc = torch.add(batch_predictions_word_chunk_sentence_doc, batch_predictions_chunk)
+                
+                # F를 사용한 loss function은 평균 내서 나온다.
+                # 배치마다 device를 통일 시켜줘야 한다.
+                mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device']))  # 평균되어서 나온다.
+                sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) 
+                mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
+                a=2;b=1;c=1
+                total_loss = a*mse_loss + b*sim_loss + c*mr_loss
+                # 손실 값 프린트 
+                # print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
+                loss_list.append(total_loss.item())
+                
+                total_loss.backward()   # 기울기 계산
+                
+                # 기울기 클리핑 : 기울기가 임계값보다 크다면 임계값 이하로 제한 
+                # 기울기 갱신하기 전에 실행되어야 한다. 즉, optimizer.step() 전에 코드 추가
+                # torch.nn.utils.clip_grad_norm_(self.bert_regression_by_word_document.parameters(), max_norm=1.0)
+                # torch.nn.utils.clip_grad_norm_(self.bert_regression_by_chunk.parameters(), max_norm=1.0)
+                
+                word_document_optimizer.step()  # 파라미터 갱신
+                chunk_optimizer.step()
+                
+                word_document_optimizer.zero_grad() # 기울기 초기화
+                chunk_optimizer.zero_grad()
+            
+            # lr 스케줄러
+            word_document_scheduler.step()  # 학습률 업데이트
+            chunk_scheduler.step()
+            
+            # 2 에폭마다 valid
+            if epoch % 2 == 0 and test:        
+                print('epoch : {}'.format(epoch))
+                new_pearson, new_qwk = self.predict_for_regress(test)      # 여기서 txt쓰기 삭제, eval 모드로 변경됨
+                pearson_list.append(new_pearson); qwk_list.append(new_qwk)
+                
+                f = open('./loss_eval/eval.txt','a')
+                f.write('\nEpoch:%d, pearson:%.3f, qwk:%.3f' % (epoch, pearson, qwk))
+                f.close()
+                            
+                self.bert_regression_by_word_document.train()   # 다시 train 모드로 변경해줘야 함
+                self.bert_regression_by_chunk.train()
+                
+                if new_pearson > pearson or new_qwk > qwk:      # 더 큰 것만 저장
+                    pearson = new_pearson
+                    qwk = new_qwk
+                    for i in range(1,100):      # 모델 저장
+                        if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
+                            continue
+                        else :
+                            self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
+                            self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
+                            
+                            print('{}번째 모델, Epoch:{}, pearson:{}, qwk:{}'.format(i, epoch, pearson, qwk))
+                            f = open('./loss_eval/eval.txt','a')
+                            f.write('\n%d번째 모델, Epoch:%d, pearson:%f, qwk:%f' % (i, epoch, pearson, qwk))
+                            f.close()
+                            break
+
+            
+        
+        # pearson_list와 qwk_list 저장
+        pearson_list = np.array(pearson_list)
+        qwk_list = np.array(qwk_list)
+        np.save('./loss_eval/adam_schedule_pearson_list.npy',pearson_list)
+        np.save('./loss_eval/adam_schedule_qwk_list.npy',qwk_list)
+        
+        # 손실그래프 및 손실 값 확인하기
+        graph = True
+        if graph:
+            # plt.plot(range(len(loss_list)),loss_list)
+            # plt.show()
+            loss_list = np.array(loss_list)
+            for i in range(1,100):
+                if os.path.exists('./loss_eval/klue_loss{}.npy'.format(i)):
+                    continue
+                else :
+                    np.save('./loss_eval/klue_loss{}.npy',loss_list)
+                    break
+            
+        # 모든 에폭으로 학습을 마친 pretrained 모델 저장하기
+        _save = False
+        if _save:
+            for i in range(1,100):
+                if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
+                    continue
+                else :
+                    self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
+                    self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
+                    break
      
     def result_point(self, input_sentence, mode_):    # 예제 넣어보기
         # bigbird를 위한 맥스길이 변경
