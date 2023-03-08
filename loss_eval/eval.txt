@@ -187,3 +187,8 @@ Epoch:80, pearson:0.577, qwk:0.550
 
 --근거의 풍부함--
 --옵티마이져 RAdam 사용--
+
+Epoch:2, pearson:0.694, qwk:0.378
+18번째 모델, Epoch:2, pearson:0.694000, qwk:0.378000
+Epoch:4, pearson:0.680, qwk:0.385
+19번째 모델, Epoch:4, pearson:0.680000, qwk:0.385000

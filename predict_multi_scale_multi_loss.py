@@ -113,8 +113,6 @@ if __name__ == "__main__":
         test = (test_essay, test_reason_points)
         model2.fit(data, test)    # 옵티마이져 : RAdam    
         
-        # model2.fit2(data,test)      # Adam + lr 스케줄러
-        
         print('-'*20)
         print('model2 finish')
         print('-'*20)

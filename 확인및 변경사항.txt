@@ -41,8 +41,12 @@ models 13~ : 풍부함 모델 학습
 
 * kobigbird : transformers.BigBirdConfig(max_position_embeddings=1024) -> 브랜치 나누기 아니면 코드에 KLUE_BERT인지 BigBird인지 나눠서 돌아가게끔 하면 되는데 건들게 많다. -> 브랜치 나누자.
 
-1. AdamW로 바꿔보기 -> RAdam으로 바꿔보기 // 에폭 2단위로 나눠서 validation -> loss, pearson, qwk 그래프 확인하기
+1. AdamW / Adam + lr scheduler로 바꿔보기 -> RAdam으로 바꿔보기 // 에폭 2단위로 나눠서 validation -> loss, pearson, qwk 그래프 확인하기
 : AdamW는 여기서 local optima에 걸리는듯? 나중에 전부 3으로 예측해버린다..
+: Adam + lr scheduler는 나름 잘 학습한다. lr scheduler가 있어야 lr이 점점 작아지면서 optima에 도달할 수 있다.
+
+: RAdam은 lr을 자동으로 찾아주는 역할을 한다. 원래 lr warmup을 통해 했었다. 이건 휴리스틱하게 정해줘야 되는 불편함이 있는데 그것을 개선한 것이다.
++ 그럼 RAdam에 lr scheduler를 추가해야하나?
 
 2. 로스 함수 계수 변경해보며 성능평가하기 -> 하이퍼파라미터 찾기
 
