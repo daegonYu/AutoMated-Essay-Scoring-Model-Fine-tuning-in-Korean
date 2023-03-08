@@ -94,7 +94,96 @@ pearson: 0.432 	 qwk: 0.333
 pearson: 0.481 	 qwk: 0.448
 pearson: 0.439 	 qwk: 0.333
 
+--근거의 풍부함--
 --기울기 클리핑 삭제, Adam -> AdamW로 변경-- 
 
+Epoch:2, pearson:0.000, qwk:0.000
+9번째 모델, Epoch:2, pearson:0.606000, qwk:0.468000
+Epoch:4, pearson:0.606, qwk:0.468
+Epoch:6, pearson:0.606, qwk:0.468
+Epoch:8, pearson:0.606, qwk:0.468
+10번째 모델, Epoch:8, pearson:0.601000, qwk:0.489000
+Epoch:10, pearson:0.601, qwk:0.489
+Epoch:12, pearson:0.601, qwk:0.489
+Epoch:14, pearson:0.601, qwk:0.489
+Epoch:16, pearson:0.601, qwk:0.489
+Epoch:18, pearson:0.601, qwk:0.489
+Epoch:20, pearson:0.601, qwk:0.489
+11번째 모델, Epoch:20, pearson:0.607000, qwk:0.483000
+Epoch:22, pearson:0.607, qwk:0.483
+Epoch:24, pearson:0.607, qwk:0.483
+Epoch:26, pearson:0.607, qwk:0.483
+Epoch:28, pearson:0.607, qwk:0.483
+Epoch:30, pearson:0.607, qwk:0.483
+Epoch:32, pearson:0.607, qwk:0.483
+Epoch:34, pearson:0.607, qwk:0.483
+Epoch:36, pearson:0.607, qwk:0.483
+Epoch:38, pearson:0.607, qwk:0.483
+Epoch:40, pearson:0.607, qwk:0.483
+Epoch:42, pearson:0.607, qwk:0.483
+Epoch:44, pearson:0.607, qwk:0.483
+Epoch:46, pearson:0.607, qwk:0.483
+Epoch:48, pearson:0.607, qwk:0.483
+Epoch:50, pearson:0.607, qwk:0.483
+Epoch:52, pearson:0.607, qwk:0.483
+Epoch:54, pearson:0.607, qwk:0.483
+Epoch:56, pearson:0.607, qwk:0.483
+Epoch:58, pearson:0.607, qwk:0.483
+Epoch:60, pearson:0.607, qwk:0.483
+Epoch:62, pearson:0.607, qwk:0.483
+Epoch:64, pearson:0.607, qwk:0.483
+Epoch:66, pearson:0.607, qwk:0.483
+Epoch:68, pearson:0.607, qwk:0.483
 
 --근거의 풍부함--
+fit2: Adam + lr 스케줄러 추가, 기울기 클리핑 삭제
+
+Epoch:2, pearson:0.531, qwk:0.417
+12번째 모델, Epoch:2, pearson:0.531000, qwk:0.417000
+Epoch:4, pearson:0.266, qwk:0.035
+Epoch:6, pearson:0.413, qwk:0.089
+Epoch:8, pearson:0.492, qwk:0.342
+Epoch:10, pearson:0.516, qwk:0.371
+Epoch:12, pearson:0.517, qwk:0.383
+Epoch:14, pearson:0.495, qwk:0.408
+Epoch:16, pearson:0.565, qwk:0.516
+13번째 모델, Epoch:16, pearson:0.565000, qwk:0.516000
+Epoch:18, pearson:0.503, qwk:0.335
+Epoch:20, pearson:0.514, qwk:0.317
+Epoch:22, pearson:0.518, qwk:0.369
+Epoch:24, pearson:0.532, qwk:0.464
+Epoch:26, pearson:0.530, qwk:0.507
+Epoch:28, pearson:0.529, qwk:0.471
+Epoch:30, pearson:0.493, qwk:0.430
+Epoch:32, pearson:0.512, qwk:0.483
+Epoch:34, pearson:0.521, qwk:0.480
+Epoch:36, pearson:0.504, qwk:0.465
+Epoch:38, pearson:0.537, qwk:0.511
+Epoch:40, pearson:0.495, qwk:0.480
+Epoch:42, pearson:0.537, qwk:0.509
+Epoch:44, pearson:0.535, qwk:0.497
+Epoch:46, pearson:0.535, qwk:0.476
+Epoch:48, pearson:0.551, qwk:0.486
+Epoch:50, pearson:0.540, qwk:0.462
+Epoch:52, pearson:0.524, qwk:0.434
+Epoch:54, pearson:0.551, qwk:0.505
+Epoch:56, pearson:0.538, qwk:0.447
+Epoch:58, pearson:0.543, qwk:0.469
+Epoch:60, pearson:0.554, qwk:0.509
+Epoch:62, pearson:0.533, qwk:0.454
+Epoch:64, pearson:0.549, qwk:0.499
+Epoch:66, pearson:0.561, qwk:0.520
+14번째 모델, Epoch:66, pearson:0.561000, qwk:0.520000
+Epoch:68, pearson:0.569, qwk:0.522
+15번째 모델, Epoch:68, pearson:0.569000, qwk:0.522000
+Epoch:70, pearson:0.556, qwk:0.502
+Epoch:72, pearson:0.560, qwk:0.505
+Epoch:74, pearson:0.571, qwk:0.536
+16번째 모델, Epoch:74, pearson:0.571000, qwk:0.536000
+Epoch:76, pearson:0.555, qwk:0.536
+Epoch:78, pearson:0.559, qwk:0.506
+Epoch:80, pearson:0.577, qwk:0.550
+17번째 모델, Epoch:80, pearson:0.577000, qwk:0.550000
+
+--근거의 풍부함--
+--옵티마이져 RAdam 사용--

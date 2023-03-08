@@ -38,10 +38,15 @@ models 13~ : 풍부함 모델 학습
 
 
 고려사항
-1. 5 fold validation
-2. kobigbird : transformers.BigBirdConfig(max_position_embeddings=1024) -> 브랜치 나누기 아니면 코드에 KLUE_BERT인지 BigBird인지 나눠서 돌아가게끔 하면 되는데 건들게 많다. -> 브랜치 나누자.
 
-1. AdamW로 바꿔보기 -> RAdam으로 바꿔보기 // 에폭 2단위로 나눠서 validation
+* kobigbird : transformers.BigBirdConfig(max_position_embeddings=1024) -> 브랜치 나누기 아니면 코드에 KLUE_BERT인지 BigBird인지 나눠서 돌아가게끔 하면 되는데 건들게 많다. -> 브랜치 나누자.
+
+1. AdamW로 바꿔보기 -> RAdam으로 바꿔보기 // 에폭 2단위로 나눠서 validation -> loss, pearson, qwk 그래프 확인하기
+: AdamW는 여기서 local optima에 걸리는듯? 나중에 전부 3으로 예측해버린다..
+
 2. 로스 함수 계수 변경해보며 성능평가하기 -> 하이퍼파라미터 찾기
-3. 엑셀 방사형 차트 그리기
+
+3. 엑셀 방사형 차트 그리기(matplotlib radar chart)
+
+4. 5 fold validation 적용하기 16 epoch씩 5번 총 80에폭
 
