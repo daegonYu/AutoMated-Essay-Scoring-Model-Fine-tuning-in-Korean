@@ -46,7 +46,10 @@ models 13~ : 풍부함 모델 학습
 : Adam + lr scheduler는 나름 잘 학습한다. lr scheduler가 있어야 lr이 점점 작아지면서 optima에 도달할 수 있다.
 
 : RAdam은 lr을 자동으로 찾아주는 역할을 한다. 원래 lr warmup을 통해 했었다. 이건 휴리스틱하게 정해줘야 되는 불편함이 있는데 그것을 개선한 것이다.
-+ 그럼 RAdam에 lr scheduler를 추가해야하나?
++ 그럼 RAdam에 lr scheduler를 추가해야하나? -> No! RAdam의 Loss 그래프를 보니 lr 스케줄러는 필요없을 듯 하다.
+그래프르르 보니 RAdam이나 Adam + lr 스케줄러가 잘 학습되는 것 같다. 
+
+Adam + lr 스케줄러하고 전에 했던 거 하고 성능 비교해보기
 
 2. 로스 함수 계수 변경해보며 성능평가하기 -> 하이퍼파라미터 찾기
 
@@ -54,3 +57,8 @@ models 13~ : 풍부함 모델 학습
 
 4. 5 fold validation 적용하기 16 epoch씩 5번 총 80에폭
 
+5. 최고성능(모델이 저장될 때)만 result.txt 저장하는 식으로 코드 변경하기 / 코사인 유사도 torch.nn.으로 바꾸고 성능 변화 확인해보기
+
+6. pearson 하고 qwk 평가지표 의미 알아보기
+: pearson이 높다는 건 정답 값이 올라갈 땐 올라가고 내려갈 땐 내려가는데 qwk가 높아야 4점이 4점다운 점수가 나오고 2점이 2점다운 점수가 나온다.
+즉, 어느정도의 pearson이 확보되면 qwk가 좀 더 중요하다.
