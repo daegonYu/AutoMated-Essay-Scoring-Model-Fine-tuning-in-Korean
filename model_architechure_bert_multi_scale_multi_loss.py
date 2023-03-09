@@ -26,15 +26,6 @@ import numpy as np
 import os.path
 
 
-# def sim(y,yhat):
-#     e = torch.tensor(1e-8)
-#     m = torch.pow(torch.pow(y,2).sum(),0.5) * torch.pow(torch.pow(yhat,2).sum(),0.5)
-#     similarity = torch.sum(y*yhat) / torch.max(torch.tensor([m,e]))
-#     # cos = nn.CosineSimilarity(dim=0, eps=1e-8)      # batchsize만큼의 점수리스트가 들어옴으로 dim=0
-#     # loss = 1- cos(y,yhat)
-#     loss = 1 - similarity
-#     return loss            # 논문보니 평균내지 않는다.
-
 # torch 이용해서 간단히 구하기(같은 식)
 def sim(y,yhat):
     cos = F.cosine_similarity(y,yhat, dim=0)
@@ -45,15 +36,15 @@ def sim(y,yhat):
 def mr_loss_func(pred,label):
     # 배치사이즈가 1이 되면 에러가 나온다.
     mr_loss = 0
-    for i in range(pred.size(0)):
+    for i in range(label.size(0)):
         y = pred - pred[i]
         yhat = label - label[i]
         yhat = yhat.sign()
         mask = y.sign() != yhat.sign()
 
-        mr_loss += y[mask].abs().sum()
+        mr_loss += y[mask].abs().sum() 
         
-    return mr_loss/label.size(0)
+    return mr_loss / (label.size(0) * (label.size(0)-1))    # 에세이 쌍의 수 만큼 나누기(N(N-1))
 
 class DocumentBertScoringModel():
     def __init__(self, load_model, chunk_model_path=None, word_doc_model_path=None, config=None, args=None):
@@ -223,18 +214,18 @@ class DocumentBertScoringModel():
         weight_decay = 0.005    # 논문 : 0.005
         
         # 옵티마이져 : RAdam
-        # word_document_optimizer = torch.optim.RAdam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
-        # chunk_optimizer = torch.optim.RAdam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
+        word_document_optimizer = torch.optim.RAdam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
+        chunk_optimizer = torch.optim.RAdam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
         
         # 논문 Adam
-        word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
-        chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
+        # word_document_optimizer = torch.optim.Adam(self.bert_regression_by_word_document.parameters(),lr=lr,weight_decay=weight_decay)
+        # chunk_optimizer = torch.optim.Adam(self.bert_regression_by_chunk.parameters(),lr=lr,weight_decay=weight_decay)
         
         # lr 스케줄러
-        word_document_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=word_document_optimizer,
-                                        lr_lambda=lambda epoch: 0.95 ** epoch)
-        chunk_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=chunk_optimizer,
-                                        lr_lambda=lambda epoch: 0.95 ** epoch)
+        # word_document_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=word_document_optimizer,
+        #                                 lr_lambda=lambda epoch: 0.95 ** epoch)
+        # chunk_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=chunk_optimizer,
+        #                                 lr_lambda=lambda epoch: 0.95 ** epoch)
         
         correct_output = None
         # bigbird를 위한 맥스길이 변경
@@ -308,8 +299,8 @@ class DocumentBertScoringModel():
                 chunk_optimizer.zero_grad()
             
             # lr 스케줄러
-            word_document_scheduler.step()  # 학습률 업데이트
-            chunk_scheduler.step()
+            # word_document_scheduler.step()  # 학습률 업데이트
+            # chunk_scheduler.step()
             
             if epoch % 2 == 0 and test:        # 2 에폭마다 test 셋으로 성능 체크
                 print('epoch : {}'.format(epoch))
@@ -335,7 +326,7 @@ class DocumentBertScoringModel():
                             
                             print('{}번째 모델, Epoch:{}, pearson:{}, qwk:{}'.format(i, epoch, pearson, qwk))
                             f = open('./loss_eval/eval.txt','a')
-                            f.write('\n%d번째 모델, Epoch:%d, pearson:%f, qwk:%f' % (i, epoch, pearson, qwk))
+                            f.write('\n%d번째 모델, Epoch:%d, pearson:%.3f, qwk:%.3f' % (i, epoch, pearson, qwk))
                             f.close()
                             break
 

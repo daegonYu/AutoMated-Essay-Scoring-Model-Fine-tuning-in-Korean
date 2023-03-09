@@ -260,3 +260,42 @@ Epoch:18, pearson:0.669, qwk:0.178
 34번째 모델, Epoch:18, pearson:0.669000, qwk:0.178000
 
 --근거의 풍부함--
+바로 위랑 같은데 코사인 유사도만 torch 이용해서 똑같이 구현함. 혹시 성능차이 있나 실험하는 것
+Epoch:2, pearson:0.691, qwk:0.422
+35번째 모델, Epoch:2, pearson:0.691000, qwk:0.422000
+Epoch:4, pearson:0.633, qwk:0.144
+Epoch:6, pearson:0.597, qwk:0.127
+Epoch:8, pearson:0.642, qwk:0.461
+36번째 모델, Epoch:8, pearson:0.642000, qwk:0.461000
+Epoch:10, pearson:0.618, qwk:0.474
+37번째 모델, Epoch:10, pearson:0.618000, qwk:0.474000
+Epoch:12, pearson:0.598, qwk:0.455
+Epoch:14, pearson:0.592, qwk:0.502
+38번째 모델, Epoch:14, pearson:0.592000, qwk:0.502000
+Epoch:16, pearson:0.560, qwk:0.342
+
+
+
+--근거의 풍부함--
+--위랑 같음--
+Epoch:2, pearson:0.673, qwk:0.464
+39번째 모델, Epoch:2, pearson:0.673000, qwk:0.464000
+Epoch:4, pearson:0.672, qwk:0.450
+Epoch:6, pearson:0.670, qwk:0.485
+40번째 모델, Epoch:6, pearson:0.670000, qwk:0.485000
+Epoch:8, pearson:0.679, qwk:0.415
+41번째 모델, Epoch:8, pearson:0.679000, qwk:0.415000
+
+--근거의 풍부함--
+--RAdam 사용--
+Epoch:2, pearson:0.697, qwk:0.372
+42번째 모델, Epoch:2, pearson:0.697000, qwk:0.372000
+Epoch:4, pearson:0.683, qwk:0.428
+43번째 모델, Epoch:4, pearson:0.683000, qwk:0.428000
+Epoch:6, pearson:0.660, qwk:0.187
+Epoch:8, pearson:0.669, qwk:0.179
+Epoch:10, pearson:0.601, qwk:0.132
+Epoch:12, pearson:0.524, qwk:0.092
+Epoch:14, pearson:0.650, qwk:0.194
+Epoch:16, pearson:0.608, qwk:0.460
+44번째 모델, Epoch:16, pearson:0.608000, qwk:0.460000
