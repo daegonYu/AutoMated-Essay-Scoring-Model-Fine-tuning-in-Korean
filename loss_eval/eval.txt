@@ -299,3 +299,149 @@ Epoch:12, pearson:0.524, qwk:0.092
 Epoch:14, pearson:0.650, qwk:0.194
 Epoch:16, pearson:0.608, qwk:0.460
 44번째 모델, Epoch:16, pearson:0.608000, qwk:0.460000
+Epoch:18, pearson:0.618, qwk:0.384
+45번째 모델, Epoch:18, pearson:0.618000, qwk:0.384000
+Epoch:20, pearson:0.585, qwk:0.456
+46번째 모델, Epoch:20, pearson:0.585000, qwk:0.456000
+Epoch:22, pearson:0.612, qwk:0.498
+47번째 모델, Epoch:22, pearson:0.612000, qwk:0.498000
+Epoch:24, pearson:0.612, qwk:0.546
+48번째 모델, Epoch:24, pearson:0.612000, qwk:0.546000
+Epoch:26, pearson:0.556, qwk:0.447
+Epoch:28, pearson:0.560, qwk:0.274
+Epoch:30, pearson:0.560, qwk:0.274
+Epoch:32, pearson:0.549, qwk:0.269
+Epoch:34, pearson:0.576, qwk:0.387
+Epoch:36, pearson:0.595, qwk:0.398
+Epoch:38, pearson:0.569, qwk:0.396
+Epoch:40, pearson:0.571, qwk:0.389
+Epoch:42, pearson:0.608, qwk:0.431
+Epoch:44, pearson:0.600, qwk:0.441
+Epoch:46, pearson:0.598, qwk:0.426
+Epoch:48, pearson:0.588, qwk:0.357
+Epoch:50, pearson:0.587, qwk:0.361
+Epoch:52, pearson:0.603, qwk:0.397
+Epoch:54, pearson:0.602, qwk:0.358
+Epoch:56, pearson:0.611, qwk:0.410
+Epoch:58, pearson:0.599, qwk:0.346
+Epoch:60, pearson:0.595, qwk:0.389
+Epoch:62, pearson:0.584, qwk:0.363
+Epoch:64, pearson:0.585, qwk:0.359
+Epoch:66, pearson:0.583, qwk:0.360
+Epoch:68, pearson:0.593, qwk:0.359
+Epoch:70, pearson:0.606, qwk:0.352
+Epoch:72, pearson:0.585, qwk:0.379
+Epoch:74, pearson:0.591, qwk:0.374
+Epoch:76, pearson:0.581, qwk:0.343
+Epoch:78, pearson:0.576, qwk:0.337
+Epoch:80, pearson:0.572, qwk:0.365
+
+--근거의 풍부함--
+--RAdam, 계수 3,0,1--
+Epoch:2, pearson:0.681, qwk:0.497
+49번째 모델, Epoch:2, pearson:0.681, qwk:0.497
+Epoch:4, pearson:0.681, qwk:0.540
+50번째 모델, Epoch:4, pearson:0.681, qwk:0.540
+Epoch:6, pearson:0.625, qwk:0.378
+Epoch:8, pearson:0.666, qwk:0.366
+Epoch:10, pearson:0.580, qwk:0.400
+Epoch:12, pearson:0.538, qwk:0.453
+Epoch:14, pearson:0.550, qwk:0.432
+
+
+--근거의 풍부함--
+ RAdam
+Epoch:2, pearson:0.691, qwk:0.483
+51번째 모델, Epoch:2, pearson:0.691, qwk:0.483
+Epoch:4, pearson:0.698, qwk:0.408
+Epoch:6, pearson:0.683, qwk:0.516
+52번째 모델, Epoch:6, pearson:0.683, qwk:0.516
+Epoch:8, pearson:0.525, qwk:0.154
+Epoch:10, pearson:0.553, qwk:0.257
+Epoch:12, pearson:0.575, qwk:0.440
+Epoch:14, pearson:0.546, qwk:0.449
+Epoch:16, pearson:0.519, qwk:0.397
+Epoch:18, pearson:0.527, qwk:0.431
+Epoch:20, pearson:0.553, qwk:0.325
+Epoch:22, pearson:0.550, qwk:0.408
+Epoch:24, pearson:0.540, qwk:0.410
+Epoch:26, pearson:0.544, qwk:0.193
+Epoch:28, pearson:0.542, qwk:0.278
+Epoch:30, pearson:0.530, qwk:0.479
+Epoch:32, pearson:0.523, qwk:0.463
+Epoch:34, pearson:0.492, qwk:0.409
+Epoch:36, pearson:0.506, qwk:0.420
+Epoch:38, pearson:0.525, qwk:0.435
+Epoch:40, pearson:0.503, qwk:0.368
+Epoch:42, pearson:0.513, qwk:0.435
+Epoch:44, pearson:0.551, qwk:0.440
+Epoch:46, pearson:0.531, qwk:0.425
+Epoch:48, pearson:0.538, qwk:0.451
+Epoch:50, pearson:0.521, qwk:0.439
+Epoch:52, pearson:0.520, qwk:0.463
+Epoch:54, pearson:0.520, qwk:0.449
+Epoch:56, pearson:0.532, qwk:0.442
+Epoch:58, pearson:0.534, qwk:0.428
+Epoch:60, pearson:0.530, qwk:0.452
+Epoch:62, pearson:0.539, qwk:0.443
+Epoch:64, pearson:0.548, qwk:0.452
+Epoch:66, pearson:0.535, qwk:0.464
+Epoch:68, pearson:0.553, qwk:0.470
+Epoch:70, pearson:0.536, qwk:0.439
+Epoch:72, pearson:0.530, qwk:0.440
+Epoch:74, pearson:0.527, qwk:0.442
+Epoch:76, pearson:0.540, qwk:0.439
+Epoch:78, pearson:0.534, qwk:0.466
+Epoch:80, pearson:0.530, qwk:0.434
+
+--근거의 풍부함-- Adam + lr 스케줄러
+
+Epoch:2, pearson:0.671, qwk:0.430
+53번째 모델, Epoch:2, pearson:0.671, qwk:0.430
+Epoch:4, pearson:0.636, qwk:0.471
+54번째 모델, Epoch:4, pearson:0.636, qwk:0.471
+Epoch:6, pearson:0.617, qwk:0.277
+Epoch:8, pearson:0.566, qwk:0.365
+Epoch:10, pearson:0.531, qwk:0.367
+Epoch:12, pearson:0.501, qwk:0.378
+Epoch:14, pearson:0.548, qwk:0.316
+Epoch:16, pearson:0.582, qwk:0.252
+Epoch:18, pearson:0.561, qwk:0.400
+Epoch:20, pearson:0.531, qwk:0.437
+Epoch:22, pearson:0.578, qwk:0.453
+Epoch:24, pearson:0.547, qwk:0.360
+Epoch:26, pearson:0.554, qwk:0.279
+Epoch:28, pearson:0.563, qwk:0.299
+Epoch:30, pearson:0.551, qwk:0.386
+Epoch:32, pearson:0.551, qwk:0.473
+55번째 모델, Epoch:32, pearson:0.551, qwk:0.473
+Epoch:34, pearson:0.554, qwk:0.392
+Epoch:36, pearson:0.567, qwk:0.425
+Epoch:38, pearson:0.557, qwk:0.526
+56번째 모델, Epoch:38, pearson:0.557, qwk:0.526
+Epoch:40, pearson:0.555, qwk:0.480
+Epoch:42, pearson:0.526, qwk:0.470
+Epoch:44, pearson:0.551, qwk:0.456
+Epoch:46, pearson:0.572, qwk:0.464
+Epoch:48, pearson:0.553, qwk:0.464
+Epoch:50, pearson:0.564, qwk:0.474
+Epoch:52, pearson:0.573, qwk:0.481
+Epoch:54, pearson:0.570, qwk:0.491
+Epoch:56, pearson:0.577, qwk:0.470
+Epoch:58, pearson:0.573, qwk:0.468
+Epoch:60, pearson:0.567, qwk:0.483
+Epoch:62, pearson:0.569, qwk:0.493
+Epoch:64, pearson:0.565, qwk:0.479
+Epoch:66, pearson:0.561, qwk:0.491
+Epoch:68, pearson:0.563, qwk:0.485
+Epoch:70, pearson:0.561, qwk:0.474
+Epoch:72, pearson:0.558, qwk:0.489
+Epoch:74, pearson:0.560, qwk:0.463
+Epoch:76, pearson:0.558, qwk:0.452
+Epoch:78, pearson:0.557, qwk:0.450
+Epoch:80, pearson:0.560, qwk:0.466
+
+
+
+--reason--
+--교차검증--

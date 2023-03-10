@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 from tqdm import tqdm
 
+
 def _initialize_arguments(p: configargparse.ArgParser):
     p.add('--bert_model_path', help='bert_model_path')
     p.add('--efl_encode', action='store_true', help='is continue training')
@@ -38,6 +39,17 @@ def _initialize_arguments(p: configargparse.ArgParser):
         args.device = 'cpu'
     return args
 
+def train_model(model,mode,data,test=None):
+    f = open('./loss_eval/eval.txt','a')
+    f.write("\n\n--%s--\n" % mode)
+    f.close()
+    
+    model.fit(data,test)
+    
+    print('-'*20)
+    print('%s finish' % mode)
+    print('-'*20)
+
 
 if __name__ == "__main__":
 
@@ -48,20 +60,33 @@ if __name__ == "__main__":
     args = _initialize_arguments(p)
     print(args)
 
-    # load train data
+    # load data
     essay_points = pd.read_csv('./datatouch/korproject/kor_essayset2_point.csv',index_col=0)
-    logical_points = essay_points.논리성.to_list()
-    novelty_points = essay_points.참신성.to_list()
-    persuasive_points = essay_points.설득력.to_list()
-    reason_points = essay_points.풍부함.to_list()
-    
     essays = pd.read_csv('./datatouch/korproject/kor_essayset2.csv', index_col=0)
-    essays = essays.essay.to_list()
     
-    tr_essay, test_essay, tr_logical_points, test_logical_points = train_test_split(essays, logical_points, test_size=0.2, random_state=321)
-    tr_essay, test_essay, tr_novelty_points, test_novelty_points = train_test_split(essays, novelty_points, test_size=0.2, random_state=321)
-    tr_essay, test_essay, tr_persuasive_points, test_persuasive_points = train_test_split(essays, persuasive_points, test_size=0.2, random_state=321)
-    tr_essay, test_essay, tr_reason_points, test_reason_points = train_test_split(essays, reason_points, test_size=0.2, random_state=321)
+    CV = True   # 교차검증 시 True  // 판다스 형태로 데이터가 입력되어야 한다.
+    if CV:
+        logical_points = essay_points.논리성
+        novelty_points = essay_points.참신성
+        persuasive_points = essay_points.설득력
+        reason_points = essay_points.풍부함
+        essays = essays.essay
+    
+    else:
+        logical_points = essay_points.논리성.to_list()
+        novelty_points = essay_points.참신성.to_list()
+        persuasive_points = essay_points.설득력.to_list()
+        reason_points = essay_points.풍부함.to_list()
+        essays = essays.essay.to_list()
+    
+    
+    
+    
+    # 데이터 나누기 (교차검증 안할 때 실행)
+    # tr_essay, test_essay, tr_logical_points, test_logical_points = train_test_split(essays, logical_points, test_size=0.2, random_state=321)
+    # tr_essay, test_essay, tr_novelty_points, test_novelty_points = train_test_split(essays, novelty_points, test_size=0.2, random_state=321)
+    # tr_essay, test_essay, tr_persuasive_points, test_persuasive_points = train_test_split(essays, persuasive_points, test_size=0.2, random_state=321)
+    # tr_essay, test_essay, tr_reason_points, test_reason_points = train_test_split(essays, reason_points, test_size=0.2, random_state=321)
     # tr_essay1 == tr_essay2 == tr_essay3 
     # test_essay1 == test_essay2 == test_essay3
     
@@ -93,50 +118,35 @@ if __name__ == "__main__":
     # model3 = DocumentBertScoringModel(load_model=False,args=args)
     # model4 = DocumentBertScoringModel(load_model=False,args=args)
     
-    
+    # 교차검증 (Cross Validation)
     train_flag = True
     if train_flag:      # data는 튜플 형태, 길이: 2
-        # f = open('./loss_eval/eval.txt','a')
-        # f.write("\n\n--논리성--\n")
-        # f.close()
+
+        data = essays, reason_points
+        train_model(model=model2,mode='reason',data= data)    
+
+          
+    # 교차검증 X
+    # train_flag = False
+    # if train_flag:      # data는 튜플 형태, 길이: 2
+        
         # data = (tr_essay, tr_logical_points)
         # test = (test_essay, test_logical_points)
-        # model1.fit(data, test)
-        # print('-'*20)
-        # print('model1 finish')
-        # print('-'*20)
-        
-        f = open('./loss_eval/eval.txt','a')
-        f.write("\n\n--근거의 풍부함--\n")
-        f.close()
-        data = (tr_essay, tr_reason_points)
-        test = (test_essay, test_reason_points)
-        model2.fit(data, test)    # 옵티마이져 : RAdam    
-        
-        print('-'*20)
-        print('model2 finish')
-        print('-'*20)
-        
-        # f = open('./loss_eval/eval.txt','a')
-        # f.write("\n\n--설득력--\n")
-        # f.close()
+        # train_model(model=model1,mode='logical',data= data, test=test)
+
+        # data = (tr_essay, tr_reason_points)
+        # test = (test_essay, test_reason_points)
+        # train_model(model=model2,mode='reason',data= data, test=test)    
+
         # data = (tr_essay, tr_persuasive_points)
         # test = (test_essay, test_persuasive_points)    
-        # model3.fit(data, test)
-        # print('-'*20)
-        # print('model3 finish')
-        # print('-'*20)
+        # train_model(model=model3,mode='persuasive',data= data, test=test)
         
-        # f = open('./loss_eval/eval.txt','a')
-        # f.write("\n\n--참신성--\n")
-        # f.close()
         # data = (tr_essay, tr_novelty_points)
         # test = (test_essay, test_novelty_points)
-        # model4.fit(data, test)
-        # print('-'*20)
-        # print('model4 finish')
-        # print('-'*20)
-    
+        # train_model(model=model4,mode='novelty',data= data, test=test)
+        
+        
     # pearson, qwk 
     # model1.predict_for_regress((test_essay, test_logical_points))
     # model2.predict_for_regress((test_essay, test_reason_points))
