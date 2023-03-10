@@ -70,5 +70,6 @@ pearson 하고 qwk 평가지표 의미 알아보기
 
 rdrop : 9로 바꿔보기
 실험할 계수 = [3,1,2]
+모델 정리하기
 
 4. 엑셀 방사형 차트 그리기(matplotlib radar chart)

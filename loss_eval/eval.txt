@@ -350,7 +350,7 @@ Epoch:14, pearson:0.550, qwk:0.432
 
 
 --근거의 풍부함--
- RAdam
+--RAdam, 계수 3,0,1--
 Epoch:2, pearson:0.691, qwk:0.483
 51번째 모델, Epoch:2, pearson:0.691, qwk:0.483
 Epoch:4, pearson:0.698, qwk:0.408
@@ -395,7 +395,7 @@ Epoch:78, pearson:0.534, qwk:0.466
 Epoch:80, pearson:0.530, qwk:0.434
 
 --근거의 풍부함-- Adam + lr 스케줄러
-
+-- 계수 3,0,1--
 Epoch:2, pearson:0.671, qwk:0.430
 53번째 모델, Epoch:2, pearson:0.671, qwk:0.430
 Epoch:4, pearson:0.636, qwk:0.471
@@ -445,3 +445,47 @@ Epoch:80, pearson:0.560, qwk:0.466
 
 --reason--
 --교차검증--
+--RAdam, 계수 3,0,1--
+Epoch:2, pearson:0.803, qwk:0.800
+57번째 모델, Epoch:2, pearson:0.803, qwk:0.800
+Epoch:4, pearson:0.777, qwk:0.705
+Epoch:6, pearson:0.714, qwk:0.649
+Epoch:8, pearson:0.717, qwk:0.542
+Epoch:10, pearson:0.725, qwk:0.263
+Epoch:12, pearson:0.717, qwk:0.614
+Epoch:14, pearson:0.700, qwk:0.622
+Epoch:16, pearson:0.688, qwk:0.562
+Epoch:2, pearson:0.844, qwk:0.819
+58번째 모델, Epoch:2, pearson:0.844, qwk:0.819
+
+--reason--
+
+Epoch:2, pearson:0.802, qwk:0.800
+59번째 모델, Epoch:2, pearson:0.802, qwk:0.800
+Epoch:4, pearson:0.801, qwk:0.776
+Epoch:6, pearson:0.796, qwk:0.798
+Epoch:8, pearson:0.804, qwk:0.749
+Epoch:10, pearson:0.645, qwk:0.526
+Epoch:12, pearson:0.699, qwk:0.414
+Epoch:14, pearson:0.653, qwk:0.353
+Epoch:16, pearson:0.700, qwk:0.586
+Epoch:2, pearson:0.820, qwk:0.578
+Epoch:4, pearson:0.823, qwk:0.588
+Epoch:6, pearson:0.823, qwk:0.585
+Epoch:8, pearson:0.823, qwk:0.587
+Epoch:10, pearson:0.822, qwk:0.585
+Epoch:12, pearson:0.822, qwk:0.589
+Epoch:14, pearson:0.823, qwk:0.596
+Epoch:16, pearson:0.822, qwk:0.587
+Epoch:2, pearson:0.613, qwk:0.552
+Epoch:4, pearson:0.613, qwk:0.568
+Epoch:6, pearson:0.613, qwk:0.554
+Epoch:8, pearson:0.615, qwk:0.536
+Epoch:10, pearson:0.615, qwk:0.542
+Epoch:12, pearson:0.615, qwk:0.540
+Epoch:14, pearson:0.614, qwk:0.549
+Epoch:16, pearson:0.617, qwk:0.547
+Epoch:2, pearson:0.769, qwk:0.628
+Epoch:4, pearson:0.768, qwk:0.665
+Epoch:6, pearson:0.769, qwk:0.681
+Epoch:8, pearson:0.774, qwk:0.644

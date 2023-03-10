@@ -229,6 +229,9 @@ class DocumentBertScoringModel():
         
         # 교차 검증
         kf = KFold(n_splits=5)
+        loss_list = []; pearson = 0; qwk = 0
+        pearson_list = []; qwk_list = []
+        avg_pearson = []; avg_qwk = []
         
         for fold, (train_index, test_index) in enumerate(kf.split(data_[0])):
             train_essays = data_[0].iloc[train_index]
@@ -266,8 +269,6 @@ class DocumentBertScoringModel():
             self.bert_regression_by_word_document.train()   # train 모드로 변경
             self.bert_regression_by_chunk.train()
             
-            loss_list = []; pearson = 0; qwk = 0
-            pearson_list = []; qwk_list = []
             for epoch in tqdm(range(1,epochs+1)):       # epoch
                 for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
                     # 배치마다 device를 통일 시켜줘야 한다.
@@ -346,7 +347,10 @@ class DocumentBertScoringModel():
                                 f.write('\n%d번째 모델, Epoch:%d, pearson:%.3f, qwk:%.3f' % (i, epoch, new_pearson, new_qwk))
                                 f.close()
                                 break
-        
+                if epoch == 16:
+                    avg_pearson.append(new_pearson)
+                    avg_qwk.append(new_qwk)
+                    
         # 교차검증 종료
         
         # pearson_list와 qwk_list 저장
@@ -359,14 +363,15 @@ class DocumentBertScoringModel():
         np.save('./loss_eval/RAdam_loss.npy',loss_list)
             
         # 모든 에폭으로 학습을 마친 pretrained 모델 저장하기
-        _save = False
+        _save = True
         if _save:
             for i in range(1,100):
                 if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
                     continue
                 else :
-                    self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
-                    self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
+                    self.bert_regression_by_word_document.save_pretrained('./models/finished_word_doc_model.bin{}'.format(i))
+                    self.bert_regression_by_chunk.save_pretrained('./models/finished_chunk_model.bin{}'.format(i))
+                    print('avg pearson : {} \t avg qwk : {}'.format(sum(avg_pearson)/5, sum(avg_qwk)/5))
                     break
     
         
