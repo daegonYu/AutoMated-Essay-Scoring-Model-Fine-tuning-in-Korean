@@ -39,12 +39,12 @@ def _initialize_arguments(p: configargparse.ArgParser):
         args.device = 'cpu'
     return args
 
-def train_model(model,mode,data,test=None):
+def train_model(model,data,test=None,mode=' '):
     f = open('./loss_eval/eval.txt','a')
     f.write("\n\n--%s--\n" % mode)
     f.close()
     
-    model.fit(data,test)
+    model.fit(data,test,mode=mode)
     
     print('-'*20)
     print('%s finish' % mode)
@@ -113,17 +113,28 @@ if __name__ == "__main__":
     
     
     # 새로 학습 시키기
-    # model1 = DocumentBertScoringModel(load_model=False,args=args)
+    model1 = DocumentBertScoringModel(load_model=False,args=args)
     model2 = DocumentBertScoringModel(load_model=False,args=args)
-    # model3 = DocumentBertScoringModel(load_model=False,args=args)
-    # model4 = DocumentBertScoringModel(load_model=False,args=args)
+    model3 = DocumentBertScoringModel(load_model=False,args=args)
+    model4 = DocumentBertScoringModel(load_model=False,args=args)
     
     # 교차검증 (Cross Validation)
     train_flag = True
     if train_flag:      # data는 튜플 형태, 길이: 2
-
+        
+        
+        data = essays, logical_points
+        train_model(model=model1, data= data,mode='logical')
+        
         data = essays, reason_points
-        train_model(model=model2,mode='reason',data= data)    
+        train_model(model=model2, data= data,mode='reason')  
+        
+        data = essays, persuasive_points
+        train_model(model=model3, data= data,mode='persuasive')  
+        
+        data = essays, novelty_points
+        train_model(model=model4, data= data,mode='novelty')  
+          
 
           
     # 교차검증 X
@@ -156,40 +167,41 @@ if __name__ == "__main__":
     # 예제넣고 결과 확인하기
     # input_sentence = [input()]      # list()와 []는 다르다.
     
-    sentence = '전통은 지키고 악습은 끊어야 한다고 생각합니다.'
-    input_sentence = [sentence,'']      # list()와 []는 다르다. // 이중 []로 batch 표현
+    # sentence = '전통은 지키고 악습은 끊어야 한다고 생각합니다.'
+    # input_sentence = [sentence,'']      # list()와 []는 다르다. // 이중 []로 batch 표현
     
     # 데이터 셋 넣고 표본 수집하기
-    # Datasampling = True
-    # if Datasampling:
-    #     hub_essays = pd.read_csv('./datatouch/korproject/전처리_AIHUB_대안제시_주장.csv', index_col=0,  lineterminator='\n')
-    #     sentences = hub_essays.essay_txt.to_list()
+    Datasampling = True
+    if Datasampling:
+        hub_essays = pd.read_csv('./datatouch/korproject/전처리_AIHUB_대안제시_주장.csv', index_col=0,  lineterminator='\n')
+        sentences = hub_essays.essay_txt.to_list()
         
-    #     logical_point_list = np.array([])
-    #     novelty_point_list = np.array([])
-    #     persuasive_point_list = np.array([])
-    #     reason_point_list = np.array([])
+        logical_point_list = np.array([])
+        novelty_point_list = np.array([])
+        persuasive_point_list = np.array([])
+        reason_point_list = np.array([])
         
-    #     for sentence in tqdm(sentences):
-    #         input_sentence =  [sentence,'']
+        print('-------점수 표본 생성 중------')
+        for sentence in sentences:
+            input_sentence =  [sentence,'']
             
-    #         # mode_ = 'logical'
-    #         # lp_ = model1.result_point(input_sentence =input_sentence ,mode_=mode_)  # 리턴 값은 float() 형, 범위 : 0~ 100
-    #         # logical_point_list = np.append(logical_point_list, lp_)
+            mode_ = 'logical'
+            lp_ = model1.result_point(input_sentence =input_sentence ,mode_=mode_)  # 리턴 값은 float() 형, 범위 : 0~ 100
+            logical_point_list = np.append(logical_point_list, lp_)
             
-    #         mode_ = 'reason'
-    #         rp_ = model2.result_point(input_sentence =input_sentence ,mode_=mode_)
-    #         reason_point_list = np.append(reason_point_list, rp_)
+            mode_ = 'reason'
+            rp_ = model2.result_point(input_sentence =input_sentence ,mode_=mode_)
+            reason_point_list = np.append(reason_point_list, rp_)
             
-    #         mode_ = 'persuasive'
-    #         pp_ = model3.result_point(input_sentence =input_sentence ,mode_=mode_)
-    #         persuasive_point_list = np.append(persuasive_point_list, pp_)
+            mode_ = 'persuasive'
+            pp_ = model3.result_point(input_sentence =input_sentence ,mode_=mode_)
+            persuasive_point_list = np.append(persuasive_point_list, pp_)
             
-    #         mode_ = 'novelty'
-    #         np_ = model4.result_point(input_sentence =input_sentence ,mode_=mode_)
-    #         novelty_point_list = np.append(novelty_point_list, np_)
+            mode_ = 'novelty'
+            np_ = model4.result_point(input_sentence =input_sentence ,mode_=mode_)
+            novelty_point_list = np.append(novelty_point_list, np_)
         
-    #     np.save('./loss_eval/essay_point/logical',logical_point_list)
-    #     np.save('./loss_eval/essay_point/novelty',novelty_point_list)
-    #     np.save('./loss_eval/essay_point/persuasive',persuasive_point_list)
-    #     np.save('./loss_eval/essay_point/reason',reason_point_list)
+        np.save('./loss_eval/aihub_mean/logical',logical_point_list)
+        np.save('./loss_eval/aihub_mean/novelty',novelty_point_list)
+        np.save('./loss_eval/aihub_mean/persuasive',persuasive_point_list)
+        np.save('./loss_eval/aihub_mean/reason',reason_point_list)

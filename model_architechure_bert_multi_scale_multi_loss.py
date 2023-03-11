@@ -207,7 +207,7 @@ class DocumentBertScoringModel():
         
         return float(test_eva_res[7]), float(test_eva_res[8]), (label_scores,prediction_scores)       # pearson, qwk 리턴
 
-    def fit(self, data_,test=None):    # data_ = 에세이, 라벨 
+    def fit(self, data_,test=None,mode=' '):    # data_ = 에세이, 라벨 
         lr = 6e-5
         
         epochs = 16     # 16 * 5 = 총 80 에폭
@@ -269,8 +269,9 @@ class DocumentBertScoringModel():
             self.bert_regression_by_word_document.train()   # train 모드로 변경
             self.bert_regression_by_chunk.train()
             
-            for epoch in tqdm(range(1,epochs+1)):       # epoch
-                for i in tqdm(range(0, document_representations_word_document.shape[0], self.args['batch_size'])):    # iteration
+            for epoch in range(1,epochs+1):       # epoch
+                print(f'{mode}_fold:{fold}_epoch:{epoch}')
+                for i in range(0, document_representations_word_document.shape[0], self.args['batch_size']):    # iteration
                     # 배치마다 device를 통일 시켜줘야 한다.
                     batch_document_tensors_word_document = document_representations_word_document[i:i + self.args['batch_size']].to(device=self.args['device'])
                     batch_predictions_word_document = self.bert_regression_by_word_document(batch_document_tensors_word_document, device=self.args['device'])
@@ -293,7 +294,7 @@ class DocumentBertScoringModel():
                     mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device']))  # 평균되어서 나온다.
                     sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) 
                     mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
-                    a=3;b=0;c=1
+                    a=3;b=1;c=2
                     total_loss = a*mse_loss + b*sim_loss + c*mr_loss
                     # 손실 값 프린트 
                     # print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
@@ -347,7 +348,14 @@ class DocumentBertScoringModel():
                                 f.write('\n%d번째 모델, Epoch:%d, pearson:%.3f, qwk:%.3f' % (i, epoch, new_pearson, new_qwk))
                                 f.close()
                                 break
-                if epoch == 16:
+                if epoch == 16:     # fold 마다 pearson, qwk, model 저장
+                    # 교차검증 결과 : fold의 평균값
+                    df_1 = pd.DataFrame( {"label" : scores[0], "pred":scores[1]})
+                    df_1.to_csv(f'./result/{mode}_{fold}_pearson:{new_pearson},qwk:{new_qwk}', index=False, sep='\t') 
+
+                    self.bert_regression_by_word_document.save_pretrained(f'./models/{mode}_{fold}_word_doc_model.bin')
+                    self.bert_regression_by_chunk.save_pretrained(f'./models/{mode}_{fold}_chunk_model.bin')
+
                     avg_pearson.append(new_pearson)
                     avg_qwk.append(new_qwk)
                     
@@ -358,20 +366,27 @@ class DocumentBertScoringModel():
         pearson_list = np.array(pearson_list)
         qwk_list = np.array(qwk_list)
         loss_list = np.array(loss_list)
-        np.save('./loss_eval/RAdam_pearson.npy',pearson_list)
-        np.save('./loss_eval/RAdam_qwk.npy',qwk_list)
-        np.save('./loss_eval/RAdam_loss.npy',loss_list)
-            
+        np.save(f'./loss_eval/{mode}_RAdam_pearson.npy',pearson_list)
+        np.save(f'./loss_eval/{mode}_RAdam_qwk.npy',qwk_list)
+        np.save(f'./loss_eval/{mode}_RAdam_loss.npy',loss_list)
+        
+         # 마지막 result  저장
+        df_1 = pd.DataFrame( {"label" : scores[0], "pred":scores[1]})
+        df_1.to_csv(f'./result/{mode}_finished_result', index=False, sep='\t') 
+                
         # 모든 에폭으로 학습을 마친 pretrained 모델 저장하기
         _save = True
         if _save:
             for i in range(1,100):
-                if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
+                if os.path.exists(f'./models/{mode}_finished_word_doc_model.bin{i}'):
                     continue
                 else :
-                    self.bert_regression_by_word_document.save_pretrained('./models/finished_word_doc_model.bin{}'.format(i))
-                    self.bert_regression_by_chunk.save_pretrained('./models/finished_chunk_model.bin{}'.format(i))
-                    print('avg pearson : {} \t avg qwk : {}'.format(sum(avg_pearson)/5, sum(avg_qwk)/5))
+                    self.bert_regression_by_word_document.save_pretrained(f'./models/{mode}_finished_word_doc_model.bin{i}')
+                    self.bert_regression_by_chunk.save_pretrained(f'./models/{mode}_finished_chunk_model.bin{i}')
+                    f = open('./loss_eval/eval.txt','a')
+                    f.write('\navg pearson : %.3f \t avg qwk : %.3f' % (sum(avg_pearson)/5, sum(avg_qwk)/5))
+                    f.close()
+                    print('avg pearson : %.3f \t avg qwk : %.3f' % (sum(avg_pearson)/5, sum(avg_qwk)/5))
                     break
     
         
@@ -429,17 +444,17 @@ class DocumentBertScoringModel():
             pred_point  *= 20
             pred_point = round(pred_point,2)
                 
-        if mode_ == 'logical':
-            print("{} 예측 점수 : {}점".format('논리성',pred_point))
+        # if mode_ == 'logical':
+        #     print("{} 예측 점수 : {}점".format('논리성',pred_point))
         
-        elif mode_ == 'novelty':
-            print("{} 예측 점수 : {}점".format('참신성',pred_point))
+        # elif mode_ == 'novelty':
+        #     print("{} 예측 점수 : {}점".format('참신성',pred_point))
         
-        elif mode_ == 'persuasive':
-            print("{} 예측 점수 : {}점".format('설득력',pred_point))
+        # elif mode_ == 'persuasive':
+        #     print("{} 예측 점수 : {}점".format('설득력',pred_point))
             
-        else:
-            print("{} 예측 점수 : {}점".format('근거의 풍부함',pred_point))
+        # else:
+        #     print("{} 예측 점수 : {}점".format('근거의 풍부함',pred_point))
         
         return pred_point
     
