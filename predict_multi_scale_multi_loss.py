@@ -95,7 +95,7 @@ if __name__ == "__main__":
     print("label number:", len(essay_points))
      
     
-    config = './models/chunk_model.bin1/config.json'    # config는 모두 같다.
+    # config = './models/chunk_model.bin1/config.json'    # config는 모두 같다.
    
     
     # model 1 : 논리성 / 2: 풍부한 근거 / 3: 설득력 / 4: 참신성
@@ -113,27 +113,27 @@ if __name__ == "__main__":
     
     
     # 새로 학습 시키기
-    model1 = DocumentBertScoringModel(load_model=False,args=args)
+    # model1 = DocumentBertScoringModel(load_model=False,args=args)
     model2 = DocumentBertScoringModel(load_model=False,args=args)
-    model3 = DocumentBertScoringModel(load_model=False,args=args)
-    model4 = DocumentBertScoringModel(load_model=False,args=args)
+    # model3 = DocumentBertScoringModel(load_model=False,args=args)
+    # model4 = DocumentBertScoringModel(load_model=False,args=args)
     
     # 교차검증 (Cross Validation)
     train_flag = True
     if train_flag:      # data는 튜플 형태, 길이: 2
         
         
-        data = essays, logical_points
-        train_model(model=model1, data= data,mode='logical')
+        # data = essays, logical_points
+        # train_model(model=model1, data= data,mode='logical')
         
         data = essays, reason_points
         train_model(model=model2, data= data,mode='reason')  
         
-        data = essays, persuasive_points
-        train_model(model=model3, data= data,mode='persuasive')  
+        # data = essays, persuasive_points
+        # train_model(model=model3, data= data,mode='persuasive')  
         
-        data = essays, novelty_points
-        train_model(model=model4, data= data,mode='novelty')  
+        # data = essays, novelty_points
+        # train_model(model=model4, data= data,mode='novelty')  
           
 
           
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     # input_sentence = [sentence,'']      # list()와 []는 다르다. // 이중 []로 batch 표현
     
     # 데이터 셋 넣고 표본 수집하기
-    Datasampling = True
+    Datasampling = False
     if Datasampling:
         hub_essays = pd.read_csv('./datatouch/korproject/전처리_AIHUB_대안제시_주장.csv', index_col=0,  lineterminator='\n')
         sentences = hub_essays.essay_txt.to_list()

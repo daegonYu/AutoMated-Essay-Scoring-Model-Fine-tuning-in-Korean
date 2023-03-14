@@ -164,6 +164,8 @@ class DocumentBertScoringModel():
         self.bert_regression_by_chunk.eval()
 
         with torch.no_grad():       
+            eval_loss = 0
+            count = 0
             predictions = torch.empty((document_representations_word_document.shape[0]))
             for i in range(0, document_representations_word_document.shape[0], self.args['batch_size']):    # 1 iteration
                 batch_document_tensors_word_document = document_representations_word_document[i:i + self.args['batch_size']].to(device=self.args['device'])
@@ -182,12 +184,22 @@ class DocumentBertScoringModel():
                     batch_predictions_chunk = torch.squeeze(batch_predictions_chunk)
                     batch_predictions_word_chunk_sentence_doc = torch.add(batch_predictions_word_chunk_sentence_doc, batch_predictions_chunk)
                 predictions[i:i + self.args['batch_size']] = batch_predictions_word_chunk_sentence_doc
+                
+                mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device']))  # 평균되어서 나온다.
+                sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) 
+                mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
+                a=3;b=1;c=2
+                eval_loss += a*mse_loss.item() + b*sim_loss.item() + c*mr_loss.item()
+                count += 1
+            eval_loss /= count
+                
         assert correct_output.shape == predictions.shape 
 
         prediction_scores = []
         label_scores = []
         predictions = predictions.cpu().numpy()
         correct_output = correct_output.cpu().numpy()
+        # result.txt에 pearson, qwk 쓰기
         outfile = open(os.path.join(self.args['model_directory'], self.args['result_file']), "w")
         for index, item in enumerate(predictions):
             # prediction_scores.append(fix_score(item, self.prompt))    # fix_score 안함
@@ -205,7 +217,7 @@ class DocumentBertScoringModel():
         # f.write("\npearson: {} \t qwk: {}".format(float(test_eva_res[7]),float(test_eva_res[8])))
         # f.close()
         
-        return float(test_eva_res[7]), float(test_eva_res[8]), (label_scores,prediction_scores)       # pearson, qwk 리턴
+        return float(test_eva_res[7]), float(test_eva_res[8]), (label_scores,prediction_scores), eval_loss       # pearson, qwk 리턴, eval loss
 
     def fit(self, data_,test=None,mode=' '):    # data_ = 에세이, 라벨 
         lr = 6e-5
@@ -232,6 +244,7 @@ class DocumentBertScoringModel():
         loss_list = []; pearson = 0; qwk = 0
         pearson_list = []; qwk_list = []
         avg_pearson = []; avg_qwk = []
+        train_loss_per_epoch_list = []; eval_loss_per_epoch_list = []
         
         for fold, (train_index, test_index) in enumerate(kf.split(data_[0])):
             train_essays = data_[0].iloc[train_index]
@@ -269,6 +282,7 @@ class DocumentBertScoringModel():
             self.bert_regression_by_word_document.train()   # train 모드로 변경
             self.bert_regression_by_chunk.train()
             
+            train_loss_per_epoch = 0; count =0
             for epoch in range(1,epochs+1):       # epoch
                 print(f'{mode}_fold:{fold}_epoch:{epoch}')
                 for i in range(0, document_representations_word_document.shape[0], self.args['batch_size']):    # iteration
@@ -296,12 +310,16 @@ class DocumentBertScoringModel():
                     mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
                     a=3;b=1;c=2
                     total_loss = a*mse_loss + b*sim_loss + c*mr_loss
-                    # 손실 값 프린트 
-                    # print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
-                    loss_list.append(total_loss.item())
-                    
                     total_loss.backward()   # 기울기 계산
                     
+                    # 손실 값 프린트 
+                    # print('Epoch : {}, iter: {}, Loss : {}'.format(epoch, i, total_loss.item()))
+                    
+                    loss_list.append(total_loss.item())
+                    
+                    train_loss_per_epoch += total_loss.item()
+                    count += 1
+
                     # 기울기 클리핑 : 기울기가 임계값보다 크다면 임계값 이하로 제한 
                     # 기울기 갱신하기 전에 실행되어야 한다. 즉, optimizer.step() 전에 코드 추가
                     # torch.nn.utils.clip_grad_norm_(self.bert_regression_by_word_document.parameters(), max_norm=1.0)
@@ -313,51 +331,57 @@ class DocumentBertScoringModel():
                     word_document_optimizer.zero_grad() # 기울기 초기화
                     chunk_optimizer.zero_grad()
                 
+                # 에폭 당 loss 평균    
+                train_loss_per_epoch /= count
+                train_loss_per_epoch_list.append(train_loss_per_epoch)
+                
                 # lr 스케줄러
                 # word_document_scheduler.step()  # 학습률 업데이트
                 # chunk_scheduler.step()
                 
-                if epoch % 2 == 0 and test:        # 2 에폭마다 test 셋으로 성능 체크
+                # validation
+                if epoch % 1 == 0 and test:        # 1 에폭마다 test 셋으로 성능 체크
                     print('epoch : {}'.format(epoch))
-                    new_pearson, new_qwk, scores = self.predict_for_regress(test)      # 여기서 txt쓰기 삭제, eval 모드로 변경됨
+                    new_pearson, new_qwk, scores, eval_loss = self.predict_for_regress(test)      # 여기서 txt쓰기 삭제, eval 모드로 변경됨
                     self.bert_regression_by_word_document.train()   # 다시 train 모드로 변경해줘야 함
                     self.bert_regression_by_chunk.train()
                     
-                    pearson_list.append(new_pearson); qwk_list.append(new_qwk)
+                    pearson_list.append(new_pearson); qwk_list.append(new_qwk); eval_loss_per_epoch_list.append(eval_loss)
                     
                     f = open('./loss_eval/eval.txt','a')
                     f.write('\nEpoch:%d, pearson:%.3f, qwk:%.3f' % (epoch, new_pearson, new_qwk))
                     f.close()
                                 
-                    if new_qwk > qwk:      # qwk 가 기존 값보다 크다면 모델 저장하기
-                        qwk = new_qwk
+                #     if new_qwk > qwk:      # qwk 가 기존 값보다 크다면 모델 저장하기
+                #         qwk = new_qwk
                         
-                        # 해당 결과값 result 폴더에 따로 저장
-                        df_1 = pd.DataFrame( {"label" : scores[0], "pred":scores[1]})
-                        df_1.to_csv('./result/pearson:{},qwk:{}'.format(new_pearson, new_qwk), index=False, sep='\t') 
+                #         # 해당 결과값 result 폴더에 따로 저장
+                #         df_1 = pd.DataFrame( {"label" : scores[0], "pred":scores[1]})
+                #         df_1.to_csv('./result/pearson:{},qwk:{}'.format(new_pearson, new_qwk), index=False, sep='\t') 
                 
-                        for i in range(1,100):      # 모델 저장
-                            if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
-                                continue
-                            else :
-                                self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
-                                self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
+                #         for i in range(1,100):      # 모델 저장
+                #             if os.path.exists('./models/word_doc_model.bin{}'.format(i)):
+                #                 continue
+                #             else :
+                #                 self.bert_regression_by_word_document.save_pretrained('./models/word_doc_model.bin{}'.format(i))
+                #                 self.bert_regression_by_chunk.save_pretrained('./models/chunk_model.bin{}'.format(i))
                                 
-                                print('{}번째 모델, Epoch:{}, pearson:{}, qwk:{}'.format(i, epoch, new_pearson, new_qwk))
-                                f = open('./loss_eval/eval.txt','a')
-                                f.write('\n%d번째 모델, Epoch:%d, pearson:%.3f, qwk:%.3f' % (i, epoch, new_pearson, new_qwk))
-                                f.close()
-                                break
-                if epoch == 16:     # fold 마다 pearson, qwk, model 저장
-                    # 교차검증 결과 : fold의 평균값
-                    df_1 = pd.DataFrame( {"label" : scores[0], "pred":scores[1]})
-                    df_1.to_csv(f'./result/{mode}_{fold}_pearson:{new_pearson},qwk:{new_qwk}', index=False, sep='\t') 
+                #                 print('{}번째 모델, Epoch:{}, pearson:{}, qwk:{}'.format(i, epoch, new_pearson, new_qwk))
+                #                 f = open('./loss_eval/eval.txt','a')
+                #                 f.write('\n%d번째 모델, Epoch:%d, pearson:%.3f, qwk:%.3f' % (i, epoch, new_pearson, new_qwk))
+                #                 f.close()
+                #                 break
+                            
+                # if epoch == 16:     # fold 마다 pearson, qwk, model 저장
+                #     # 교차검증 결과 : fold의 평균값
+                #     df_1 = pd.DataFrame( {"label" : scores[0], "pred":scores[1]})
+                #     df_1.to_csv(f'./result/{mode}_{fold}_pearson:{new_pearson},qwk:{new_qwk}', index=False, sep='\t') 
 
-                    self.bert_regression_by_word_document.save_pretrained(f'./models/{mode}_{fold}_word_doc_model.bin')
-                    self.bert_regression_by_chunk.save_pretrained(f'./models/{mode}_{fold}_chunk_model.bin')
+                #     self.bert_regression_by_word_document.save_pretrained(f'./models/{mode}_{fold}_word_doc_model.bin')
+                #     self.bert_regression_by_chunk.save_pretrained(f'./models/{mode}_{fold}_chunk_model.bin')
 
-                    avg_pearson.append(new_pearson)
-                    avg_qwk.append(new_qwk)
+                #     avg_pearson.append(new_pearson)
+                #     avg_qwk.append(new_qwk)
                     
         # 교차검증 종료
         
@@ -366,16 +390,21 @@ class DocumentBertScoringModel():
         pearson_list = np.array(pearson_list)
         qwk_list = np.array(qwk_list)
         loss_list = np.array(loss_list)
-        np.save(f'./loss_eval/{mode}_RAdam_pearson.npy',pearson_list)
-        np.save(f'./loss_eval/{mode}_RAdam_qwk.npy',qwk_list)
-        np.save(f'./loss_eval/{mode}_RAdam_loss.npy',loss_list)
+        eval_loss_per_epoch_list = np.array(eval_loss_per_epoch_list)
+        train_loss_per_epoch_list = np.array(train_loss_per_epoch_list)
+        
+        np.save(f'./train_valid_loss/{mode}_pearson.npy',pearson_list)
+        np.save(f'./train_valid_loss/{mode}_qwk.npy',qwk_list)
+        np.save(f'./train_valid_loss/{mode}_train_loss.npy',loss_list)
+        np.save(f'./train_valid_loss/{mode}_eval_loss.npy',eval_loss_per_epoch_list)
+        np.save(f'./train_valid_loss/{mode}_train_loss.npy',train_loss_per_epoch_list)
         
          # 마지막 result  저장
-        df_1 = pd.DataFrame( {"label" : scores[0], "pred":scores[1]})
-        df_1.to_csv(f'./result/{mode}_finished_result', index=False, sep='\t') 
+        # df_1 = pd.DataFrame( {"label" : scores[0], "pred":scores[1]})
+        # df_1.to_csv(f'./result/{mode}_finished_result', index=False, sep='\t') 
                 
         # 모든 에폭으로 학습을 마친 pretrained 모델 저장하기
-        _save = True
+        _save = False
         if _save:
             for i in range(1,100):
                 if os.path.exists(f'./models/{mode}_finished_word_doc_model.bin{i}'):
