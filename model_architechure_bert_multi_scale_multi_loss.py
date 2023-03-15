@@ -188,7 +188,7 @@ class DocumentBertScoringModel():
                 mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device']))  # 평균되어서 나온다.
                 sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) 
                 mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
-                a=3;b=1;c=2
+                a=1;b=1;c=2
                 eval_loss += a*mse_loss.item() + b*sim_loss.item() + c*mr_loss.item()
                 count += 1
             eval_loss /= count
@@ -308,7 +308,7 @@ class DocumentBertScoringModel():
                     mse_loss = F.mse_loss(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device']))  # 평균되어서 나온다.
                     sim_loss = sim(batch_predictions_word_chunk_sentence_doc,correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) 
                     mr_loss = mr_loss_func(batch_predictions_word_chunk_sentence_doc, correct_output[i:i + self.args['batch_size']].to(device=self.args['device'])) # 평균되어서 나온다.
-                    a=3;b=1;c=2
+                    a=1;b=1;c=2
                     total_loss = a*mse_loss + b*sim_loss + c*mr_loss
                     total_loss.backward()   # 기울기 계산
                     
@@ -348,6 +348,7 @@ class DocumentBertScoringModel():
                     
                     pearson_list.append(new_pearson); qwk_list.append(new_qwk); eval_loss_per_epoch_list.append(eval_loss)
                     
+                    # txt 파일로 에폭당 pearson과 qwk 저장하기
                     f = open('./loss_eval/eval.txt','a')
                     f.write('\nEpoch:%d, pearson:%.3f, qwk:%.3f' % (epoch, new_pearson, new_qwk))
                     f.close()

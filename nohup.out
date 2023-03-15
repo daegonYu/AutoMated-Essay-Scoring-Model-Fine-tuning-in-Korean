@@ -9,3 +9,407 @@ Some weights of the model checkpoint at klue/bert-base were not used when initia
 Some weights of DocumentBertSentenceChunkAttentionLSTM were not initialized from the model checkpoint at klue/bert-base and are newly initialized: ['lstm.weight_hh_l0', 'mlp.1.weight', 'lstm.bias_ih_l0', 'b_omega', 'mlp.1.bias', 'w_omega', 'lstm.weight_ih_l0', 'lstm.bias_hh_l0', 'u_omega']
 You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
 Token indices sequence length is longer than the specified maximum sequence length for this model (618 > 512). Running this sequence through the model will result in indexing errors
+--------------------------------
+GPU 사용 여부 :  True
+Namespace(batch_size=4, bert_batch_size=None, bert_model_path='/home/daegon/AES/data/p2_3', chunk_sizes='90_30_130_10', cuda=True, data_dir='/home/daegon/AES/data', data_sample_rate=1.0, device='cuda', efl_encode=False, fold='3', model_directory='/home/daegon/AES/data/p2_3', prompt='p2', r_dropout=0.0, result_file='/home/daegon/AES/result.txt', test_file='/home/daegon/AES/data/p8_fold3_test.txt')
+sample number: 1800
+label number: 1800
+prompt:2, asap_essay_length:704
+chunk_sizes_str:90_30_130_10, bert_batch_size_str:8,24,6,71
+reason_fold:0_epoch:1
+epoch : 1
+pearson: 0.77
+qwk: 0.599
+reason_fold:0_epoch:2
+epoch : 2
+pearson: 0.789
+qwk: 0.759
+reason_fold:0_epoch:3
+epoch : 3
+pearson: 0.78
+qwk: 0.623
+reason_fold:0_epoch:4
+epoch : 4
+pearson: 0.8
+qwk: 0.746
+reason_fold:0_epoch:5
+epoch : 5
+pearson: 0.735
+qwk: 0.607
+reason_fold:0_epoch:6
+epoch : 6
+pearson: 0.788
+qwk: 0.745
+reason_fold:0_epoch:7
+epoch : 7
+pearson: 0.686
+qwk: 0.567
+reason_fold:0_epoch:8
+epoch : 8
+pearson: 0.681
+qwk: 0.567
+reason_fold:0_epoch:9
+epoch : 9
+pearson: 0.691
+qwk: 0.568
+reason_fold:0_epoch:10
+epoch : 10
+pearson: 0.672
+qwk: 0.479
+reason_fold:0_epoch:11
+epoch : 11
+pearson: 0.69
+qwk: 0.403
+reason_fold:0_epoch:12
+epoch : 12
+pearson: 0.642
+qwk: 0.257
+reason_fold:0_epoch:13
+epoch : 13
+pearson: 0.636
+qwk: 0.258
+reason_fold:0_epoch:14
+epoch : 14
+pearson: 0.678
+qwk: 0.46
+reason_fold:0_epoch:15
+epoch : 15
+pearson: 0.685
+qwk: 0.55
+reason_fold:0_epoch:16
+epoch : 16
+pearson: 0.663
+qwk: 0.519
+reason_fold:1_epoch:1
+epoch : 1
+pearson: 0.906
+qwk: 0.832
+reason_fold:1_epoch:2
+epoch : 2
+pearson: 0.91
+qwk: 0.707
+reason_fold:1_epoch:3
+epoch : 3
+pearson: 0.864
+qwk: 0.654
+reason_fold:1_epoch:4
+epoch : 4
+pearson: 0.855
+qwk: 0.612
+reason_fold:1_epoch:5
+epoch : 5
+pearson: 0.808
+qwk: 0.621
+reason_fold:1_epoch:6
+epoch : 6
+pearson: 0.823
+qwk: 0.642
+reason_fold:1_epoch:7
+epoch : 7
+pearson: 0.78
+qwk: 0.509
+reason_fold:1_epoch:8
+epoch : 8
+pearson: 0.803
+qwk: 0.571
+reason_fold:1_epoch:9
+epoch : 9
+pearson: 0.78
+qwk: 0.613
+reason_fold:1_epoch:10
+epoch : 10
+pearson: 0.774
+qwk: 0.686
+reason_fold:1_epoch:11
+epoch : 11
+pearson: 0.759
+qwk: 0.629
+reason_fold:1_epoch:12
+epoch : 12
+pearson: 0.765
+qwk: 0.611
+reason_fold:1_epoch:13
+epoch : 13
+pearson: 0.774
+qwk: 0.638
+reason_fold:1_epoch:14
+epoch : 14
+pearson: 0.749
+qwk: 0.601
+reason_fold:1_epoch:15
+epoch : 15
+pearson: 0.768
+qwk: 0.618
+reason_fold:1_epoch:16
+epoch : 16
+pearson: 0.758
+qwk: 0.565
+reason_fold:2_epoch:1
+epoch : 1
+pearson: 0.887
+qwk: 0.779
+reason_fold:2_epoch:2
+epoch : 2
+pearson: 0.872
+qwk: 0.8
+reason_fold:2_epoch:3
+epoch : 3
+pearson: 0.883
+qwk: 0.699
+reason_fold:2_epoch:4
+epoch : 4
+pearson: 0.858
+qwk: 0.7
+reason_fold:2_epoch:5
+epoch : 5
+pearson: 0.866
+qwk: 0.749
+reason_fold:2_epoch:6
+epoch : 6
+pearson: 0.822
+qwk: 0.568
+reason_fold:2_epoch:7
+epoch : 7
+pearson: 0.825
+qwk: 0.463
+reason_fold:2_epoch:8
+epoch : 8
+pearson: 0.788
+qwk: 0.49
+reason_fold:2_epoch:9
+epoch : 9
+pearson: 0.811
+qwk: 0.517
+reason_fold:2_epoch:10
+epoch : 10
+pearson: 0.801
+qwk: 0.237
+reason_fold:2_epoch:11
+epoch : 11
+pearson: 0.81
+qwk: 0.454
+reason_fold:2_epoch:12
+epoch : 12
+pearson: 0.798
+qwk: 0.585
+reason_fold:2_epoch:13
+epoch : 13
+pearson: 0.778
+qwk: 0.656
+reason_fold:2_epoch:14
+epoch : 14
+pearson: 0.791
+qwk: 0.636
+reason_fold:2_epoch:15
+epoch : 15
+pearson: 0.788
+qwk: 0.552
+reason_fold:2_epoch:16
+epoch : 16
+pearson: 0.779
+qwk: 0.555
+reason_fold:3_epoch:1
+epoch : 1
+pearson: 0.954
+qwk: 0.666
+reason_fold:3_epoch:2
+epoch : 2
+pearson: 0.952
+qwk: 0.664
+reason_fold:3_epoch:3
+epoch : 3
+pearson: 0.946
+qwk: 0.64
+reason_fold:3_epoch:4
+epoch : 4
+pearson: 0.939
+qwk: 0.606
+reason_fold:3_epoch:5
+epoch : 5
+pearson: 0.938
+qwk: 0.58
+reason_fold:3_epoch:6
+epoch : 6
+pearson: 0.939
+qwk: 0.621
+reason_fold:3_epoch:7
+epoch : 7
+pearson: 0.938
+qwk: 0.661
+reason_fold:3_epoch:8
+epoch : 8
+pearson: 0.93
+qwk: 0.621
+reason_fold:3_epoch:9
+epoch : 9
+pearson: 0.931
+qwk: 0.65
+reason_fold:3_epoch:10
+epoch : 10
+pearson: 0.924
+qwk: 0.66
+reason_fold:3_epoch:11
+epoch : 11
+pearson: 0.924
+qwk: 0.653
+reason_fold:3_epoch:12
+epoch : 12
+pearson: 0.91
+qwk: 0.731
+reason_fold:3_epoch:13
+epoch : 13
+pearson: 0.908
+qwk: 0.693
+reason_fold:3_epoch:14
+epoch : 14
+pearson: 0.897
+qwk: 0.67
+reason_fold:3_epoch:15
+epoch : 15
+pearson: 0.892
+qwk: 0.685
+reason_fold:3_epoch:16
+epoch : 16
+pearson: 0.88
+qwk: 0.698
+reason_fold:4_epoch:1
+epoch : 1
+pearson: 0.937
+qwk: 0.905
+reason_fold:4_epoch:2
+epoch : 2
+pearson: 0.943
+qwk: 0.909
+reason_fold:4_epoch:3
+epoch : 3
+pearson: 0.942
+qwk: 0.891
+reason_fold:4_epoch:4
+epoch : 4
+pearson: 0.938
+qwk: 0.899
+reason_fold:4_epoch:5
+epoch : 5
+pearson: 0.945
+qwk: 0.902
+reason_fold:4_epoch:6
+epoch : 6
+pearson: 0.94
+qwk: 0.875
+reason_fold:4_epoch:7
+epoch : 7
+pearson: 0.94
+qwk: 0.9
+reason_fold:4_epoch:8
+epoch : 8
+pearson: 0.946
+qwk: 0.926
+reason_fold:4_epoch:9
+epoch : 9
+pearson: 0.938
+qwk: 0.905
+reason_fold:4_epoch:10
+epoch : 10
+pearson: 0.941
+qwk: 0.925
+reason_fold:4_epoch:11
+epoch : 11
+pearson: 0.938
+qwk: 0.914
+reason_fold:4_epoch:12
+epoch : 12
+pearson: 0.938
+qwk: 0.925
+reason_fold:4_epoch:13
+epoch : 13
+pearson: 0.933
+qwk: 0.92
+reason_fold:4_epoch:14
+epoch : 14
+pearson: 0.929
+qwk: 0.914
+reason_fold:4_epoch:15
+epoch : 15
+pearson: 0.929
+qwk: 0.926
+reason_fold:4_epoch:16
+epoch : 16
+pearson: 0.925
+qwk: 0.899
+--------------------
+reason finish
+--------------------
+Some weights of the model checkpoint at klue/bert-base were not used when initializing DocumentBertCombineWordDocumentLinear: ['cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight']
+- This IS expected if you are initializing DocumentBertCombineWordDocumentLinear from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing DocumentBertCombineWordDocumentLinear from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of DocumentBertCombineWordDocumentLinear were not initialized from the model checkpoint at klue/bert-base and are newly initialized: ['mlp.1.bias', 'mlp.1.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at klue/bert-base were not used when initializing DocumentBertSentenceChunkAttentionLSTM: ['cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight']
+- This IS expected if you are initializing DocumentBertSentenceChunkAttentionLSTM from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing DocumentBertSentenceChunkAttentionLSTM from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of DocumentBertSentenceChunkAttentionLSTM were not initialized from the model checkpoint at klue/bert-base and are newly initialized: ['lstm.weight_hh_l0', 'mlp.1.bias', 'u_omega', 'b_omega', 'mlp.1.weight', 'lstm.weight_ih_l0', 'lstm.bias_hh_l0', 'lstm.bias_ih_l0', 'w_omega']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Token indices sequence length is longer than the specified maximum sequence length for this model (618 > 512). Running this sequence through the model will result in indexing errors
+--------------------------------
+GPU 사용 여부 :  True
+Namespace(batch_size=4, bert_batch_size=None, bert_model_path='/home/daegon/AES/data/p2_3', chunk_sizes='90_30_130_10', cuda=True, data_dir='/home/daegon/AES/data', data_sample_rate=1.0, device='cuda', efl_encode=False, fold='3', model_directory='/home/daegon/AES/data/p2_3', prompt='p2', r_dropout=0.0, result_file='/home/daegon/AES/result.txt', test_file='/home/daegon/AES/data/p8_fold3_test.txt')
+sample number: 1800
+label number: 1800
+prompt:2, asap_essay_length:704
+chunk_sizes_str:90_30_130_10, bert_batch_size_str:8,24,6,71
+reason_fold:0_epoch:1
+epoch : 1
+pearson: 0.771
+qwk: 0.555
+reason_fold:0_epoch:2
+epoch : 2
+pearson: 0.782
+qwk: 0.496
+reason_fold:0_epoch:3
+epoch : 3
+pearson: 0.789
+qwk: 0.522
+reason_fold:0_epoch:4
+epoch : 4
+pearson: 0.782
+qwk: 0.535
+reason_fold:0_epoch:5
+epoch : 5
+pearson: 0.77
+qwk: 0.512
+reason_fold:0_epoch:6
+epoch : 6
+pearson: 0.782
+qwk: 0.494
+reason_fold:0_epoch:7
+epoch : 7
+pearson: 0.793
+qwk: 0.0
+reason_fold:0_epoch:8
+epoch : 8
+pearson: 0.774
+qwk: 0.54
+reason_fold:0_epoch:9
+Traceback (most recent call last):
+  File "/home/daegon/AES/predict_multi_scale_multi_loss.py", line 130, in <module>
+    train_model(model=model2, data= data,mode='reason')  
+  File "/home/daegon/AES/predict_multi_scale_multi_loss.py", line 47, in train_model
+    model.fit(data,test,mode=mode)
+  File "/home/daegon/AES/model_architechure_bert_multi_scale_multi_loss.py", line 313, in fit
+    total_loss.backward()   # 기울기 계산
+  File "/home/daegon/.conda/envs/kaes/lib/python3.8/site-packages/torch/_tensor.py", line 396, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "/home/daegon/.conda/envs/kaes/lib/python3.8/site-packages/torch/autograd/__init__.py", line 173, in backward
+    Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+KeyboardInterrupt
+Some weights of the model checkpoint at klue/bert-base were not used when initializing DocumentBertCombineWordDocumentLinear: ['cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.decoder.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing DocumentBertCombineWordDocumentLinear from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing DocumentBertCombineWordDocumentLinear from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of DocumentBertCombineWordDocumentLinear were not initialized from the model checkpoint at klue/bert-base and are newly initialized: ['mlp.1.weight', 'mlp.1.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at klue/bert-base were not used when initializing DocumentBertSentenceChunkAttentionLSTM: ['cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.decoder.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight']
+- This IS expected if you are initializing DocumentBertSentenceChunkAttentionLSTM from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing DocumentBertSentenceChunkAttentionLSTM from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of DocumentBertSentenceChunkAttentionLSTM were not initialized from the model checkpoint at klue/bert-base and are newly initialized: ['lstm.bias_hh_l0', 'mlp.1.weight', 'mlp.1.bias', 'b_omega', 'w_omega', 'lstm.weight_hh_l0', 'u_omega', 'lstm.weight_ih_l0', 'lstm.bias_ih_l0']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Token indices sequence length is longer than the specified maximum sequence length for this model (618 > 512). Running this sequence through the model will result in indexing errors
