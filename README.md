@@ -6,7 +6,9 @@
 ## 모델 구조 
 
 - Git : https://github.com/lingochamp/multi-scale-bert-aes 
-(Kaggle ASAP데이터에서 가장 높은 성능을 내는 모델 중 하나) 
+(Kaggle ASAP데이터에서 가장 높은 성능을 내는 모델 중 하나)
+
+<br>
 
 ## 사전 학습 모델
 - Pretrained Model : KLUE-BERT (한국어로 사전 학습된 BERT 모델 중 하나)
@@ -23,41 +25,42 @@ Kaggle : ASAP 에세이 데이터셋의 Prompt 2를 한국어 번역 및 전처�
 
 ## 최종 모델의 성능
 
-#### 논리성 모델 
+- #### 논리성 모델 
   pearson : 0.698 qwk : 0.612 <br>
 
 
-#### 근거의 풍부함 모델 <br>
+- #### 근거의 풍부함 모델 <br>
   pearson: 0.696 qwk: 0.638 <br>
 
 
-#### 설득력 모델 <br>
+- #### 설득력 모델 <br>
   pearson: 0.712 qwk: 0.675 <br>
 
 
-#### 참신성 모델 <br>
+- #### 참신성 모델 <br>
   pearson: 0.588 qwk: 0.512 <br>
+
+<br>
 
 
 ## 모델의 성능 비교
 
-----
 
 ### 결과부터 보자면 처음의 모델의 성능과 최종 모델의 성능 비교는 아래와 같다.
 
-### 논리성 모델 <br>
+- #### 논리성 모델 <br>
   pearson: 0.529 -> 0.698 (약 0.17 상승) <br>
   qwk : 0.431 -> 0.612 (약 0.18 상승) <br>
 
-### 근거의 풍부함 모델 <br>
+- #### 근거의 풍부함 모델 <br>
   pearson: 0.585 -> 0.696 (약 0.11 상승) <br>
   qwk : 0.583 -> 0.638 (약 0.05 상승) <br>
 
-### 설득력 모델 <br>
+- #### 설득력 모델 <br>
   pearson: 0.516 -> 0.712 (약 0.2 상승) <br>
   qwk : 0.466 -> 0.675 (약 0.21 상승) <br>
 
-### 참신성 모델 <br>
+- #### 참신성 모델 <br>
   pearson: 0.459 -> 0.588 (약 0.13 상승) <br>
   qwk : 0.431 -> 0.512 (약 0.08 상승) <br>
 
@@ -69,16 +72,12 @@ Kaggle : ASAP 에세이 데이터셋의 Prompt 2를 한국어 번역 및 전처�
 - SIM 손실 함수 : 예측 값과 정답 값의 코사인 유사도를 계산 <br>
 - MR(Margin Ranking) : 배치 데이터에서 i번째 정답 값이 j번째 정답 값보다 크다면 예측 값도 마찬가지로 i번째 예측 값이 j번째 예측 값보다 커야함, 하지만 같거나 작으면 예측 값의 차이 만큼 손실 발생
 
-<br>
-
 -----
 
+### <실험 1>
 
 - 옵티마이져는 가장 대표적인 Adam 사용 <br>
 - 예측 점수와 정답 간의 점수 차를 줄이는 것이 중요하다고 생각하여 MSE의 손실 함수 가중치 2로 설정 <br>
-
-<br>
-
 - Optimizer : Adam <br>
 - 손실함수 계수 : MSE, SIM, MR = 2, 1, 1 <br>
 
@@ -88,6 +87,8 @@ Kaggle : ASAP 에세이 데이터셋의 Prompt 2를 한국어 번역 및 전처�
   참신성 모델       pearson: 0.459 	 qwk: 0.431 <br>
 
 -----
+
+### <실험 2>
 
 - 하나의 모델을 학습시키는데 걸리는 시간 5~6시간이기 때문에 모든 요소가 아닌 하나의 요소만 선택하여 실험 <br>
 
@@ -103,6 +104,8 @@ Kaggle : ASAP 에세이 데이터셋의 Prompt 2를 한국어 번역 및 전처�
 
 -----------
 
+### <실험 3>
+
 - 옵티마이저 RAdam으로 변경 <br> 
 RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 
@@ -114,6 +117,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 
 
 -----
+### <실험 4>
 
 - 손실 함수 계수 변경 및 Adam + lr 스케줄러와 RAdam과의 성능 비교 <br>
 
@@ -126,6 +130,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 
 
 ----
+### <실험 5>
 
 - Opimizer : RAdam <br>
 - 손실함수 계수 : MSE, SIM, MR = 3, 0, 1 <br>
@@ -134,6 +139,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 
 
 ------
+### <실험 6>
 
 - 데이터가 1800개 밖에 안되므로 모든 데이터셋을 훈련에 활용하여 고정된 train set과 test set의 과적합을 막고 일반화된 모델 생성을 위해 교차 검증 시행
 
@@ -145,6 +151,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 
 
 -----------
+### <실험 7>
 
 - pearson 계수와 SIM 손실 함수와 연관 있다고 생각하여 SIM 손실 함수 추가 <br>
 
@@ -157,7 +164,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 
 
 ------
-### 최종 학습 
+### <마지막 실험>
 
 
 
@@ -172,14 +179,13 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
   참신성 모델       pearson: 0.743 qwk: 0.708  <br>
 
 
-<br>
+---
+- ### 5-fold validation의 각 fold의 성능의 평균은 아래와 같다.
 
-### 5-fold validation의 각 fold의 성능의 평균은 아래와 같다.
 
-
-  논리성 모델      avg_pearson: 0.698   avg_qwk: 0.612 <br>
-  근거의 풍부함 모델 avg_pearson: 0.696 avg_qwk: 0.638 <br>
-  설득력 모델       avg_pearson: 0.712  avg_qwk: 0.675 <br>
-  참신성 모델       avg_pearson: 0.588  avg_qwk: 0.512 <br>
+  논리성 모델       pearson: 0.698   qwk: 0.612 <br>
+  근거의 풍부함 모델 pearson: 0.696 qwk: 0.638 <br>
+  설득력 모델       pearson: 0.712  qwk: 0.675 <br>
+  참신성 모델       pearson: 0.588  qwk: 0.512 <br>
 
 
