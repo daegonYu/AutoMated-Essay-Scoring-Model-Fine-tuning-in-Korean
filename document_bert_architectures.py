@@ -4,9 +4,6 @@ from torch.nn import LSTM
 from transformers import BertPreTrainedModel, BertConfig, BertModel
 import torch.nn.functional as F
 
-# from transformers import BigBirdModel, BigBirdTokenizer
-
-
 
 def init_weights(m):
     if isinstance(m, nn.Linear):
@@ -14,7 +11,7 @@ def init_weights(m):
         m.bias.data.fill_(2)        # Paper : 7
 
 
-class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  # 원본    # 이거 초기화할때는 nn.Module 써야하나?? 그래야하나.........그럼 pretrained()만 바꿔주면 된다.
+class DocumentBertSentenceChunkAttentionLSTM(BertPreTrainedModel):  
     def __init__(self, bert_model_config: BertConfig):
         super(DocumentBertSentenceChunkAttentionLSTM, self).__init__(bert_model_config)
         self.bert = BertModel(bert_model_config)  
