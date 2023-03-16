@@ -24,19 +24,19 @@ Kaggle : ASAP 에세이 데이터셋의 Prompt 2를 한국어 번역 및 전처�
 ## 최종 모델의 성능
 
 #### 논리성 모델 
-pearson : 0.698 qwk : 0.612 <br>
+  pearson : 0.698 qwk : 0.612 <br>
 
 
 #### 근거의 풍부함 모델 <br>
-pearson: 0.696 qwk: 0.638 <br>
+  pearson: 0.696 qwk: 0.638 <br>
 
 
 #### 설득력 모델 <br>
-pearson: 0.712 qwk: 0.675 <br>
+  pearson: 0.712 qwk: 0.675 <br>
 
 
 #### 참신성 모델 <br>
-pearson: 0.588 qwk: 0.512 <br>
+  pearson: 0.588 qwk: 0.512 <br>
 
 
 ## 모델의 성능 비교
@@ -46,20 +46,20 @@ pearson: 0.588 qwk: 0.512 <br>
 ### 결과부터 보자면 처음의 모델의 성능과 최종 모델의 성능 비교는 아래와 같다.
 
 ### 논리성 모델 <br>
-pearson: 0.529 -> 0.698 (약 0.17 상승) <br>
-qwk : 0.431 -> 0.612 (약 0.18 상승) <br>
+  pearson: 0.529 -> 0.698 (약 0.17 상승) <br>
+  qwk : 0.431 -> 0.612 (약 0.18 상승) <br>
 
 ### 근거의 풍부함 모델 <br>
-pearson: 0.585 -> 0.696 (약 0.11 상승) <br>
-qwk : 0.583 -> 0.638 (약 0.05 상승) <br>
+  pearson: 0.585 -> 0.696 (약 0.11 상승) <br>
+  qwk : 0.583 -> 0.638 (약 0.05 상승) <br>
 
 ### 설득력 모델 <br>
-pearson: 0.516 -> 0.712 (약 0.2 상승) <br>
-qwk : 0.466 -> 0.675 (약 0.21 상승) <br>
+  pearson: 0.516 -> 0.712 (약 0.2 상승) <br>
+  qwk : 0.466 -> 0.675 (약 0.21 상승) <br>
 
 ### 참신성 모델 <br>
-pearson: 0.459 -> 0.588 (약 0.13 상승) <br>
-qwk : 0.431 -> 0.512 (약 0.08 상승) <br>
+  pearson: 0.459 -> 0.588 (약 0.13 상승) <br>
+  qwk : 0.431 -> 0.512 (약 0.08 상승) <br>
 
 --------
 
@@ -82,10 +82,10 @@ qwk : 0.431 -> 0.512 (약 0.08 상승) <br>
 - Optimizer : Adam <br>
 - 손실함수 계수 : MSE, SIM, MR = 2, 1, 1 <br>
 
-논리성 모델       pearson: 0.529 	 qwk: 0.431 <br>
-근거의 풍부함 모델 pearson: 0.585 	 qwk: 0.583 <br>
-설득력 모델       pearson: 0.516 	 qwk: 0.466 <br>
-참신성 모델       pearson: 0.459 	 qwk: 0.431 <br>
+  논리성 모델       pearson: 0.529 	 qwk: 0.431 <br>
+  근거의 풍부함 모델 pearson: 0.585 	 qwk: 0.583 <br>
+  설득력 모델       pearson: 0.516 	 qwk: 0.466 <br>
+  참신성 모델       pearson: 0.459 	 qwk: 0.431 <br>
 
 -----
 
@@ -99,7 +99,7 @@ qwk : 0.431 -> 0.512 (약 0.08 상승) <br>
 - lr 스케줄러 : LambdaLR <br>
 - 손실함수 계수 : MSE, SIM, MR = 2, 1, 1 <br>
 
-근거의 풍부함 모델  pearson:0.577, qwk:0.550 <br>
+  근거의 풍부함 모델  pearson:0.577, qwk:0.550 <br>
 
 -----------
 
@@ -110,7 +110,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 - Opimizer : RAdam <br>
 - 손실함수 계수 : MSE, SIM, MR = 2, 1, 1 <br>
 
-- 근거의 풍부함 모델  pearson:0.644, qwk:0.547 <br>
+  근거의 풍부함 모델  pearson:0.644, qwk:0.547 <br>
 
 
 -----
@@ -122,7 +122,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 - lr 스케줄러 : LambdaLR <br>
 - 손실함수 계수 : MSE, SIM, MR = 3, 0, 1 <br>
 
-근거의 풍부함 모델 pearson:0.557, qwk:0.526 <br>
+  근거의 풍부함 모델 pearson:0.557, qwk:0.526 <br>
 
 
 ----
@@ -130,7 +130,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 - Opimizer : RAdam <br>
 - 손실함수 계수 : MSE, SIM, MR = 3, 0, 1 <br>
 
-근거의 풍부함 모델 pearson:0.553, qwk:0.470 <br>
+  근거의 풍부함 모델 pearson:0.553, qwk:0.470 <br>
 
 
 ------
@@ -141,7 +141,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 - Opimizer : RAdam <br>
 - 손실함수 계수 : MSE, SIM, MR = 3, 0, 1 <br>
 
-근거의 풍부함 모델 pearson: 0.786 qwk: 0.679 <br>
+  근거의 풍부함 모델 pearson: 0.786 qwk: 0.679 <br>
 
 
 -----------
@@ -153,7 +153,7 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 - Opimizer : RAdam <br>
 - 손실함수 계수 : MSE, SIM, MR = 3, 1, 2 <br>
 
-근거의 풍부함 모델 pearson: 0.908 qwk: 0.847 <br>
+  근거의 풍부함 모델 pearson: 0.908 qwk: 0.847 <br>
 
 
 ------
@@ -166,10 +166,10 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 - 손실함수 계수 : MSE, SIM, MR = 3, 1, 2 <br>
 
 
-논리성 모델      pearson : 0.869 qwk : 0.821 <br>
-근거의 풍부함 모델 pearson: 0.894 qwk: 0.81 <br>
-설득력 모델       pearson : pearson: 0.899 qwk: 0.795 <br>
-참신성 모델       pearson: 0.743 qwk: 0.708  <br>
+  논리성 모델      pearson : 0.869 qwk : 0.821 <br>
+  근거의 풍부함 모델 pearson: 0.894 qwk: 0.81 <br>
+  설득력 모델       pearson : pearson: 0.899 qwk: 0.795 <br>
+  참신성 모델       pearson: 0.743 qwk: 0.708  <br>
 
 
 <br>
@@ -177,9 +177,9 @@ RAdam(Rectified Adam) : Adam의 단점을 보안한 옵티마이저
 ### 5-fold validation의 각 fold의 성능의 평균은 아래와 같다.
 
 
-논리성 모델      avg_pearson: 0.698   avg_qwk: 0.612 <br>
-근거의 풍부함 모델 avg_pearson: 0.696 avg_qwk: 0.638 <br>
-설득력 모델       avg_pearson: 0.712  avg_qwk: 0.675 <br>
-참신성 모델       avg_pearson: 0.588  avg_qwk: 0.512 <br>
+  논리성 모델      avg_pearson: 0.698   avg_qwk: 0.612 <br>
+  근거의 풍부함 모델 avg_pearson: 0.696 avg_qwk: 0.638 <br>
+  설득력 모델       avg_pearson: 0.712  avg_qwk: 0.675 <br>
+  참신성 모델       avg_pearson: 0.588  avg_qwk: 0.512 <br>
 
 
