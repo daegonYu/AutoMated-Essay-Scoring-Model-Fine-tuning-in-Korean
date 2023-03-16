@@ -626,8 +626,6 @@ Epoch:14, pearson:0.786, qwk:0.615
 Epoch:16, pearson:0.773, qwk:0.638
 
 
---logical--
-
 
 --reason--
 
@@ -733,3 +731,63 @@ Epoch:16, pearson:0.775, qwk:0.529
 Epoch:2, pearson:0.802, qwk:0.148
 Epoch:3, pearson:0.804, qwk:0.134
 Epoch:4, pearson:0.803, qwk:0.134
+Epoch:5, pearson:0.803, qwk:0.485
+Epoch:6, pearson:0.802, qwk:0.485
+Epoch:7, pearson:0.801, qwk:0.492
+Epoch:8, pearson:0.802, qwk:0.505
+Epoch:9, pearson:0.801, qwk:0.556
+Epoch:10, pearson:0.800, qwk:0.554
+Epoch:11, pearson:0.800, qwk:0.569
+Epoch:12, pearson:0.799, qwk:0.551
+Epoch:13, pearson:0.799, qwk:0.551
+Epoch:14, pearson:0.800, qwk:0.553
+Epoch:15, pearson:0.801, qwk:0.559
+Epoch:16, pearson:0.798, qwk:0.549
+Epoch:1, pearson:0.602, qwk:0.502
+Epoch:2, pearson:0.601, qwk:0.503
+Epoch:3, pearson:0.601, qwk:0.459
+Epoch:4, pearson:0.600, qwk:0.500
+Epoch:5, pearson:0.599, qwk:0.507
+Epoch:6, pearson:0.602, qwk:0.463
+Epoch:7, pearson:0.599, qwk:0.297
+Epoch:8, pearson:0.600, qwk:0.473
+Epoch:9, pearson:0.600, qwk:0.487
+Epoch:10, pearson:0.600, qwk:0.470
+Epoch:11, pearson:0.600, qwk:0.473
+Epoch:12, pearson:0.600, qwk:0.473
+Epoch:13, pearson:0.600, qwk:0.486
+Epoch:14, pearson:0.600, qwk:0.477
+Epoch:15, pearson:0.600, qwk:0.487
+Epoch:16, pearson:0.600, qwk:0.482
+Epoch:1, pearson:0.688, qwk:0.456
+Epoch:2, pearson:0.687, qwk:0.479
+Epoch:3, pearson:0.687, qwk:0.440
+Epoch:4, pearson:0.687, qwk:0.451
+Epoch:5, pearson:0.689, qwk:0.443
+Epoch:6, pearson:0.690, qwk:0.443
+Epoch:7, pearson:0.694, qwk:0.448
+Epoch:8, pearson:0.691, qwk:0.451
+Epoch:9, pearson:0.692, qwk:0.441
+Epoch:10, pearson:0.695, qwk:0.502
+Epoch:11, pearson:0.695, qwk:0.478
+Epoch:12, pearson:0.699, qwk:0.515
+Epoch:13, pearson:0.697, qwk:0.517
+Epoch:14, pearson:0.698, qwk:0.525
+Epoch:15, pearson:0.696, qwk:0.530
+Epoch:16, pearson:0.691, qwk:0.520
+Epoch:1, pearson:0.736, qwk:0.525
+Epoch:2, pearson:0.741, qwk:0.538
+Epoch:3, pearson:0.747, qwk:0.539
+Epoch:4, pearson:0.748, qwk:0.531
+Epoch:5, pearson:0.752, qwk:0.547
+Epoch:6, pearson:0.752, qwk:0.548
+Epoch:7, pearson:0.762, qwk:0.555
+Epoch:8, pearson:0.762, qwk:0.569
+Epoch:9, pearson:0.764, qwk:0.539
+Epoch:10, pearson:0.766, qwk:0.573
+Epoch:11, pearson:0.760, qwk:0.575
+Epoch:12, pearson:0.762, qwk:0.588
+Epoch:13, pearson:0.763, qwk:0.602
+Epoch:14, pearson:0.760, qwk:0.663
+Epoch:15, pearson:0.761, qwk:0.665
+Epoch:16, pearson:0.754, qwk:0.655

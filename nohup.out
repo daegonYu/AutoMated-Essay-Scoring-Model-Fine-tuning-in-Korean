@@ -413,3 +413,333 @@ Some weights of the model checkpoint at klue/bert-base were not used when initia
 Some weights of DocumentBertSentenceChunkAttentionLSTM were not initialized from the model checkpoint at klue/bert-base and are newly initialized: ['lstm.bias_hh_l0', 'mlp.1.weight', 'mlp.1.bias', 'b_omega', 'w_omega', 'lstm.weight_hh_l0', 'u_omega', 'lstm.weight_ih_l0', 'lstm.bias_ih_l0']
 You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
 Token indices sequence length is longer than the specified maximum sequence length for this model (618 > 512). Running this sequence through the model will result in indexing errors
+--------------------------------
+GPU 사용 여부 :  True
+Namespace(batch_size=4, bert_batch_size=None, bert_model_path='/home/daegon/AES/data/p2_3', chunk_sizes='90_30_130_10', cuda=True, data_dir='/home/daegon/AES/data', data_sample_rate=1.0, device='cuda', efl_encode=False, fold='3', model_directory='/home/daegon/AES/data/p2_3', prompt='p2', r_dropout=0.0, result_file='/home/daegon/AES/result.txt', test_file='/home/daegon/AES/data/p8_fold3_test.txt')
+sample number: 1800
+label number: 1800
+prompt:2, asap_essay_length:704
+chunk_sizes_str:90_30_130_10, bert_batch_size_str:8,24,6,71
+reason_fold:0_epoch:1
+epoch : 1
+pearson: 0.791
+qwk: 0.545
+reason_fold:0_epoch:2
+epoch : 2
+pearson: 0.807
+qwk: 0.549
+reason_fold:0_epoch:3
+epoch : 3
+pearson: 0.818
+qwk: 0.514
+reason_fold:0_epoch:4
+epoch : 4
+pearson: 0.766
+qwk: 0.513
+reason_fold:0_epoch:5
+epoch : 5
+pearson: 0.783
+qwk: 0.505
+reason_fold:0_epoch:6
+epoch : 6
+pearson: 0.716
+qwk: 0.242
+reason_fold:0_epoch:7
+epoch : 7
+pearson: 0.769
+qwk: 0.535
+reason_fold:0_epoch:8
+epoch : 8
+pearson: 0.766
+qwk: 0.533
+reason_fold:0_epoch:9
+epoch : 9
+pearson: 0.778
+qwk: 0.504
+reason_fold:0_epoch:10
+epoch : 10
+pearson: 0.778
+qwk: 0.507
+reason_fold:0_epoch:11
+epoch : 11
+pearson: 0.778
+qwk: 0.579
+reason_fold:0_epoch:12
+epoch : 12
+pearson: 0.775
+qwk: 0.49
+reason_fold:0_epoch:13
+epoch : 13
+pearson: 0.776
+qwk: 0.151
+reason_fold:0_epoch:14
+epoch : 14
+pearson: 0.774
+qwk: 0.502
+reason_fold:0_epoch:15
+epoch : 15
+pearson: 0.773
+qwk: 0.508
+reason_fold:0_epoch:16
+epoch : 16
+pearson: 0.775
+qwk: 0.529
+reason_fold:1_epoch:1
+epoch : 1
+pearson: 0.802
+qwk: 0.171
+reason_fold:1_epoch:2
+epoch : 2
+pearson: 0.802
+qwk: 0.148
+reason_fold:1_epoch:3
+epoch : 3
+pearson: 0.804
+qwk: 0.134
+reason_fold:1_epoch:4
+epoch : 4
+pearson: 0.803
+qwk: 0.134
+reason_fold:1_epoch:5
+epoch : 5
+pearson: 0.803
+qwk: 0.485
+reason_fold:1_epoch:6
+epoch : 6
+pearson: 0.802
+qwk: 0.485
+reason_fold:1_epoch:7
+epoch : 7
+pearson: 0.801
+qwk: 0.492
+reason_fold:1_epoch:8
+epoch : 8
+pearson: 0.802
+qwk: 0.505
+reason_fold:1_epoch:9
+epoch : 9
+pearson: 0.801
+qwk: 0.556
+reason_fold:1_epoch:10
+epoch : 10
+pearson: 0.8
+qwk: 0.554
+reason_fold:1_epoch:11
+epoch : 11
+pearson: 0.8
+qwk: 0.569
+reason_fold:1_epoch:12
+epoch : 12
+pearson: 0.799
+qwk: 0.551
+reason_fold:1_epoch:13
+epoch : 13
+pearson: 0.799
+qwk: 0.551
+reason_fold:1_epoch:14
+epoch : 14
+pearson: 0.8
+qwk: 0.553
+reason_fold:1_epoch:15
+epoch : 15
+pearson: 0.801
+qwk: 0.559
+reason_fold:1_epoch:16
+epoch : 16
+pearson: 0.798
+qwk: 0.549
+reason_fold:2_epoch:1
+epoch : 1
+pearson: 0.602
+qwk: 0.502
+reason_fold:2_epoch:2
+epoch : 2
+pearson: 0.601
+qwk: 0.503
+reason_fold:2_epoch:3
+epoch : 3
+pearson: 0.601
+qwk: 0.459
+reason_fold:2_epoch:4
+epoch : 4
+pearson: 0.6
+qwk: 0.5
+reason_fold:2_epoch:5
+epoch : 5
+pearson: 0.599
+qwk: 0.507
+reason_fold:2_epoch:6
+epoch : 6
+pearson: 0.602
+qwk: 0.463
+reason_fold:2_epoch:7
+epoch : 7
+pearson: 0.599
+qwk: 0.297
+reason_fold:2_epoch:8
+epoch : 8
+pearson: 0.6
+qwk: 0.473
+reason_fold:2_epoch:9
+epoch : 9
+pearson: 0.6
+qwk: 0.487
+reason_fold:2_epoch:10
+epoch : 10
+pearson: 0.6
+qwk: 0.47
+reason_fold:2_epoch:11
+epoch : 11
+pearson: 0.6
+qwk: 0.473
+reason_fold:2_epoch:12
+epoch : 12
+pearson: 0.6
+qwk: 0.473
+reason_fold:2_epoch:13
+epoch : 13
+pearson: 0.6
+qwk: 0.486
+reason_fold:2_epoch:14
+epoch : 14
+pearson: 0.6
+qwk: 0.477
+reason_fold:2_epoch:15
+epoch : 15
+pearson: 0.6
+qwk: 0.487
+reason_fold:2_epoch:16
+epoch : 16
+pearson: 0.6
+qwk: 0.482
+reason_fold:3_epoch:1
+epoch : 1
+pearson: 0.688
+qwk: 0.456
+reason_fold:3_epoch:2
+epoch : 2
+pearson: 0.687
+qwk: 0.479
+reason_fold:3_epoch:3
+epoch : 3
+pearson: 0.687
+qwk: 0.44
+reason_fold:3_epoch:4
+epoch : 4
+pearson: 0.687
+qwk: 0.451
+reason_fold:3_epoch:5
+epoch : 5
+pearson: 0.689
+qwk: 0.443
+reason_fold:3_epoch:6
+epoch : 6
+pearson: 0.69
+qwk: 0.443
+reason_fold:3_epoch:7
+epoch : 7
+pearson: 0.694
+qwk: 0.448
+reason_fold:3_epoch:8
+epoch : 8
+pearson: 0.691
+qwk: 0.451
+reason_fold:3_epoch:9
+epoch : 9
+pearson: 0.692
+qwk: 0.441
+reason_fold:3_epoch:10
+epoch : 10
+pearson: 0.695
+qwk: 0.502
+reason_fold:3_epoch:11
+epoch : 11
+pearson: 0.695
+qwk: 0.478
+reason_fold:3_epoch:12
+epoch : 12
+pearson: 0.699
+qwk: 0.515
+reason_fold:3_epoch:13
+epoch : 13
+pearson: 0.697
+qwk: 0.517
+reason_fold:3_epoch:14
+epoch : 14
+pearson: 0.698
+qwk: 0.525
+reason_fold:3_epoch:15
+epoch : 15
+pearson: 0.696
+qwk: 0.53
+reason_fold:3_epoch:16
+epoch : 16
+pearson: 0.691
+qwk: 0.52
+reason_fold:4_epoch:1
+epoch : 1
+pearson: 0.736
+qwk: 0.525
+reason_fold:4_epoch:2
+epoch : 2
+pearson: 0.741
+qwk: 0.538
+reason_fold:4_epoch:3
+epoch : 3
+pearson: 0.747
+qwk: 0.539
+reason_fold:4_epoch:4
+epoch : 4
+pearson: 0.748
+qwk: 0.531
+reason_fold:4_epoch:5
+epoch : 5
+pearson: 0.752
+qwk: 0.547
+reason_fold:4_epoch:6
+epoch : 6
+pearson: 0.752
+qwk: 0.548
+reason_fold:4_epoch:7
+epoch : 7
+pearson: 0.762
+qwk: 0.555
+reason_fold:4_epoch:8
+epoch : 8
+pearson: 0.762
+qwk: 0.569
+reason_fold:4_epoch:9
+epoch : 9
+pearson: 0.764
+qwk: 0.539
+reason_fold:4_epoch:10
+epoch : 10
+pearson: 0.766
+qwk: 0.573
+reason_fold:4_epoch:11
+epoch : 11
+pearson: 0.76
+qwk: 0.575
+reason_fold:4_epoch:12
+epoch : 12
+pearson: 0.762
+qwk: 0.588
+reason_fold:4_epoch:13
+epoch : 13
+pearson: 0.763
+qwk: 0.602
+reason_fold:4_epoch:14
+epoch : 14
+pearson: 0.76
+qwk: 0.663
+reason_fold:4_epoch:15
+epoch : 15
+pearson: 0.761
+qwk: 0.665
+reason_fold:4_epoch:16
+epoch : 16
+pearson: 0.754
+qwk: 0.655
+--------------------
+reason finish
+--------------------
