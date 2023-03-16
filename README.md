@@ -1,7 +1,7 @@
-# BERT를 활용한 자동에세이점수부여(AES) 모델 
+# BERT를 활용한 에세이 점수 부여(AES) 모델 
 
-### 에세이를 넣으면 점수 산출 <br> 4가지 요소에 대해 나의 글쓰기 능력을 평가해 볼 수 있음
-### 4가지 요소 => 논리성, 근거의 풍부함, 설득력, 참신성
+### 모델이 에세이를 읽고 점수 산출
+
 <br> 
 
 ## 모델 구조 
@@ -9,9 +9,16 @@
 
 <br>
 
-## 프로젝트 내용
-### 사전 학습 모델 : KLUE-BERT 
-### 미세 조정(Fine-tuning) : 4가지 요소에 대해 평가된 1800개 한글 에세이 사용
-### => branch : korean_project 로 모델 학습 진행중
-### git : daegonYu/flakAESHomepage 에서 korean_project로 구현한 모델을 웹 페이지로 시각화 진행중
+# branch : korean_project
+### <프로젝트 내용>
+### Pretrained Model : KLUE-BERT (한국어 BERT) 사용
+### Fine-tuning : 4가지 요소(논리성, 풍부한 근거, 설득력, 참신성)에 대해 평가된 1800개 한글 에세이 사용(Kaggle ASAP 데이터 -> 한글 번역 및 전처리 -> 라벨링)
+### 손실 함수 계수 변경, 옵티마이저 변경, 교차 검증 등을 사용하여 모델 최적화 
+
+<br>
+
+# Repository : flakAESHomepage
+### <프로젝트 내용>
+### korean_project로 구현한 에세이 점수 산출 모델을 웹 페이지로 시각화 
+### 기능 1. 다른 학생들의 점수와 4가지 요소에 대해 나의 점수 비교 
 
