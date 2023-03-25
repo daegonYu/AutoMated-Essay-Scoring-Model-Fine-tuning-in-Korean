@@ -7,7 +7,7 @@
 <br> <br>
 
 ## 모델 구조 
-위의 논문("On the Use of BERT for Automated Essay Scoring: Joint Learning of Multi-Scale Essay Representation")에 적힌 <br> Git : https://github.com/lingochamp/multi-scale-bert-aes 활용
+위의 논문("On the Use of BERT for Automated Essay Scoring: Joint Learning of Multi-Scale Essay Representation") 모델 아키텍쳐 활용 (2022 SOTA) <br> Git : https://github.com/lingochamp/multi-scale-bert-aes
 
 <br>
 
