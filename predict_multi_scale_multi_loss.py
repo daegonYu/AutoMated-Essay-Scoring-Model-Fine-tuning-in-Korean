@@ -39,7 +39,9 @@ def _initialize_arguments(p: configargparse.ArgParser):
         args.device = 'cpu'
     return args
 
+# model=사용 모델, data=학습 데이터, test=테스트 데이터, mode=선택한 요소
 def train_model(model,data,test=None,mode=' '):
+    # train 시 평가 결과를 적는 텍스트 파일에 제목 달기
     f = open('./loss_eval/eval.txt','a')
     f.write("\n\n--%s--\n" % mode)
     f.close()
@@ -78,8 +80,6 @@ if __name__ == "__main__":
         persuasive_points = essay_points.설득력.to_list()
         reason_points = essay_points.풍부함.to_list()
         essays = essays.essay.to_list()
-    
-    
     
     
     # 데이터 나누기 (교차검증 안할 때 실행)
@@ -122,7 +122,6 @@ if __name__ == "__main__":
     train_flag = True
     if train_flag:      # data는 튜플 형태, 길이: 2
         
-        
         # data = essays, logical_points
         # train_model(model=model1, data= data,mode='logical')
         
@@ -134,8 +133,7 @@ if __name__ == "__main__":
         
         # data = essays, novelty_points
         # train_model(model=model4, data= data,mode='novelty')  
-          
-
+        
           
     # 교차검증 X
     # train_flag = False
@@ -176,6 +174,7 @@ if __name__ == "__main__":
         hub_essays = pd.read_csv('./datatouch/korproject/전처리_AIHUB_대안제시_주장.csv', index_col=0,  lineterminator='\n')
         sentences = hub_essays.essay_txt.to_list()
         
+        # 점수의 표본을 저장할 넘파이 리스트 생성
         logical_point_list = np.array([])
         novelty_point_list = np.array([])
         persuasive_point_list = np.array([])
@@ -201,6 +200,7 @@ if __name__ == "__main__":
             np_ = model4.result_point(input_sentence =input_sentence ,mode_=mode_)
             novelty_point_list = np.append(novelty_point_list, np_)
         
+        # for문이 끝나면 저장
         np.save('./loss_eval/aihub_mean/logical',logical_point_list)
         np.save('./loss_eval/aihub_mean/novelty',novelty_point_list)
         np.save('./loss_eval/aihub_mean/persuasive',persuasive_point_list)
