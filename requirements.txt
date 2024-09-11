@@ -1,8 +1,9 @@
-# transformers==3.4.0
+transformers==4.7.0
 configargparse
 scikit-learn
 matplotlib
 protobuf==3.20.*
 pandas==1.1.5
-# conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=11.0 -c pytorch
-# 따로 명령어 실행, cuda = 11.0 버전
+# cuda 버전에 맞게 torch 설치 cuda 11.6의 예시
+# pip install torch==1.12.0+cu116 torchvision==0.13.0+cu116 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu116
+# python = 3.8

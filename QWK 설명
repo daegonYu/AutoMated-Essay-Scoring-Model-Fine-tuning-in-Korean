@@ -1,8 +1,0 @@
-QWK 계수 
-이는 모델이 채점자 중 한 사람을 대체했을 때 얼마나 사람과 비슷한 에세이 평가가 가능한지를 보여준다.
-0.401∼0.600 사이 값은 적당한(Moderate) 일치, 0.601∼0.800은 상당한(Substantial) 일치, 0.801∼1.000은 완벽한(Almost perfect) 일치를 의미한다.
-
-
-Reference
-J. R. Landis and G. G. Koch, “The measurement of observer agreement for categorical data,” biometrics, pp.
-159–174, 1977
