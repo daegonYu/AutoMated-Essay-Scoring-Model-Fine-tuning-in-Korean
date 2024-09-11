@@ -21,13 +21,13 @@ Reference: J. R. Landis and G. G. Koch, “The measurement of observer agreement
 4. data 경로: /home/daegon/Multi-Scale-BERT-AES/data 로 해주고 p8_fold3_test.txt라는 이름이 데이터파일 이어야함
 5. model 경로: model_directory: /home/daegon/Multi-Scale-BERT-AES/data 이렇게 해두고 밑에 p8_3 폴더가 있어야함 (p8_3 폴더는 https://pan.baidu.com/s/1_m_-DQlX-dLh1XdhOMzj1A?pwd=tmmb  에서 다운 받은 것)
 
-
-home='current_path'
-bert_model_path="${home}/Multi-Scale-BERT-AES/data/p8_3"
-data_dir="${home}/Multi-Scale-BERT-AES/data"
-model_directory="${home}/Multi-Scale-BERT-AES/data/p8_3"
-result_file="${home}/Multi-Scale-BERT-AES/result.txt"
-test_file="${home}/Multi-Scale-BERT-AES/data/p8_fold3_test.txt"
+<br>
+home='current_path' <br>
+bert_model_path="${home}/Multi-Scale-BERT-AES/data/p8_3"<br>
+data_dir="${home}/Multi-Scale-BERT-AES/data"<br>
+model_directory="${home}/Multi-Scale-BERT-AES/data/p8_3"<br>
+result_file="${home}/Multi-Scale-BERT-AES/result.txt"<br>
+test_file="${home}/Multi-Scale-BERT-AES/data/p8_fold3_test.txt"<br><br>
 
 
 # 모델 구조 
